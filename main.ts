@@ -1,4 +1,5 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { ExampleView, VIEW_TYPE_EXAMPLE } from "./view";
 
 interface MyPluginSettings {
 	mySetting: string;
@@ -12,12 +13,35 @@ export default class MyPlugin extends Plugin {
 	settings: MyPluginSettings;
 
 	async onload() {
+		console.log('onload');
+
 		await this.loadSettings();
+
+		this.registerView(
+			VIEW_TYPE_EXAMPLE,
+			(leaf) => new ExampleView(leaf)
+		  );
 
 		// This creates an icon in the left ribbon.
 		let ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
+			//new Notice('Hello World! Joshwin! Joshwin! Joshwin!');
+
+			/*
+			const files = this.app.vault.getMarkdownFiles()
+
+			for (let i = 0; i < files.length; i++) {
+				console.log(files[i].path);
+			}
+			*/
+
+			/*
+			this.app.workspace.iterateAllLeaves((leaf) => {
+				console.log(leaf.getViewState().type);
+			});
+			*/
+
+			this.activateView();
 		});
 		// Perform additional things with the ribbon
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
@@ -76,8 +100,23 @@ export default class MyPlugin extends Plugin {
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
-	onunload() {
+	async activateView() {
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXAMPLE);
+	
+		await this.app.workspace.getLeaf(true).setViewState({
+		  type: VIEW_TYPE_EXAMPLE,
+		  active: true,
+		});
+	
+		this.app.workspace.revealLeaf(
+		  this.app.workspace.getLeavesOfType(VIEW_TYPE_EXAMPLE)[0]
+		);
+	  }
 
+	onunload() {
+		console.log("unload");
+
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXAMPLE);
 	}
 
 	async loadSettings() {

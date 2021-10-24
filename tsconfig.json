@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "baseUrl": ".",
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
-    "target": "ES6",
+    "target": "esnext",
     "allowJs": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
@@ -14,9 +15,9 @@
       "es5",
       "scripthost",
       "es2015"
-    ]
+    ],
   },
   "include": [
     "**/*.ts"
-  ]
+, "view.tsx", "context.tsx"  ]
 }
