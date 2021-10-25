@@ -11,7 +11,7 @@ export default function ReactApp() {
   function generateList(array: any[]) {
     let result = [];
 
-    result = array.map((item, index) => <p key={ index } className={'item'} onClick={(event) => showContextMenu(event) }>{ getItemTitleOnly(item.name) }</p>);
+    result = array.map((item, index) => <p key={ index } className={'item'} onClick={(event) => showContextMenu(event) }>{ item.name }</p>);
 
     return result;
   }
@@ -46,19 +46,22 @@ export default function ReactApp() {
     setSPItems(result);
   }
 
-  async function getSuccessPlanObjects() { // TODO: Place this after the other success plan method in useEffect
+  async function getSuccessPlanObjects() {
     let result = [];
 
     for (let i = 0; i < successPlanItems.length; i++) {
-      parseFile(successPlanItems[i]);
+      result.push(await parseFile(successPlanItems[i]));
     }
+
+    setSPObjects(result);
   }
 
   async function parseFile(file: TFile) { // Will ignore Associations for now
     let result = { 
-      name: getItemTitleOnly(file.name), 
+      name: getItemTitleOnly(file.name),
       share_with_family: '',
       family_connection: '',
+      impact: '',
       type: '',
       status: '',
       difficulty: '',
@@ -86,7 +89,7 @@ export default function ReactApp() {
 
     let propertyContentArray = propertyContent.split('\n');
 
-    let tagProps = ['Type', 'Status', 'Difficulty', 'Tag'];
+    let tagProps = ['Type', 'Status', 'Difficulty', 'Tag', 'Impact'];
     let upstreamAndDateProps = ['Upstream', 'Do Date', 'Due Date', 'Closing Date'];
 
     // check what the string starts with (only difference: upstream/dates vs everything else) - dif: page vs tag
@@ -129,6 +132,7 @@ export default function ReactApp() {
 
     console.log('result:', result);
 
+    return result;
   }
 
   // `PropertyKey` is short for "string | number | symbol"
@@ -138,38 +142,60 @@ export default function ReactApp() {
     return key in obj
   }
 
-  function getValueFromTagStr(text: string): string {
-    let result = '';
+  function getValueFromTagStr(text: string): any {
+    let result: string | number;
     let secondHalf = text.split(':')[1];
 
     if (secondHalf.includes('/')) {
-      result = uppercaseFirstChar(secondHalf.split('/')[1]);
+      result = uppercaseFirstChar(secondHalf.split('/')[1].trim());
+
+      // check if this is for difficulty or for the 25/5 min tag
+      if (result.includes('-inc')) {
+        result = parseInt(result.split('-inc')[0]);
+      } else if (result.includes('-mins')) {
+        result = parseInt(result.split('-mins')[0]);
+      } else if (result.includes('-')) {
+        let resultArray = result.split('-');
+
+        for (let x = 1; x < resultArray.length; x++) {
+          resultArray[x] = uppercaseFirstChar(resultArray[x]);
+        }
+        result = resultArray.join(' ');
+      }
     }
 
-    return result.trim();
+    return result;
   }
 
-  function getValueFromUpstreamOrDateStr(text: string): string {
-    let result = '';
+  function getValueFromUpstreamOrDateStr(text: string): any {
+    let result: string | Date;
     let secondHalf = text.split(':')[1];
     
     if (secondHalf.includes('[[')) {
-      result = secondHalf.replace('[[', '').replace(']]', '');
+      result = secondHalf.replace('[[', '').replace(']]', '').trim();
+
+      if (text.includes('Date')) {
+        result = new Date(result);
+      }
     }
     
-    return result.trim();
+    return result;
   }
 
   function uppercaseFirstChar(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
-  function getTasks() {
+  function getTasksOfGivenStatus(taskStatus: string) {
+    console.log('getTasks');
+
     let result = [];
 
-    for (let i = 0; i < successPlanItems.length; i++) {
-      if (successPlanItems[i].name.startsWith('Task')) {
-        result.push(successPlanItems[i]);
+    for (let i = 0; i < successPlanObjects.length; i++) {
+      console.log(successPlanObjects[i]);
+
+      if (successPlanObjects[i].type == 'Task' && successPlanObjects[i].status == taskStatus) {
+        result.push(successPlanObjects[i]);
       }
     }
 
@@ -206,7 +232,7 @@ export default function ReactApp() {
 
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
-    if (!successPlanItems) { // The if statement needs to be used unless you want setState to be called on every rerender (causing that maxiumum update depth error & infinite loop)
+    if (!successPlanItems) { // The if statement needs to be used unless I want setState to be called on every rerender (causing that maxiumum update depth error & infinite loop)
       getSuccessPlanItems(); 
     }
     if (successPlanItems && !successPlanObjects) {
@@ -216,14 +242,14 @@ export default function ReactApp() {
 
   return (
     <>
-      { successPlanItems ? // TODO: Change to the objects
+      { successPlanObjects ?
         <>
           <h3>Ready to Complete</h3>
-          { generateList(getTasks()) }
+          { generateList(getTasksOfGivenStatus('Ready To Complete')) }
           <h3>In Progress</h3>
-          { generateList(getTasks()) }
+          { generateList(getTasksOfGivenStatus('In Progress')) }
           <h3>Complete</h3>
-          { generateList(getTasks()) }
+          { generateList(getTasksOfGivenStatus('Complete')) }
         </> : null
       }
     </>
