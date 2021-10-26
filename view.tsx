@@ -4,19 +4,19 @@ import * as ReactDOM from "react-dom";
 import ReactApp from "./ReactApp";
 import { AppContext } from "./context";
 
-export const VIEW_TYPE_EXAMPLE = "example-view";
+export const VIEW_TYPE_SUCCESS_PLAN = "success-plan-view";
 
-export class ExampleView extends ItemView {
+export class SuccessPlanView extends ItemView {
   constructor(leaf: WorkspaceLeaf) {
     super(leaf);
   }
 
   getViewType() {
-    return VIEW_TYPE_EXAMPLE;
+    return VIEW_TYPE_SUCCESS_PLAN;
   }
 
   getDisplayText() {
-    return "Example view";
+    return "Success Plan";
   }
 
   async onOpen() {

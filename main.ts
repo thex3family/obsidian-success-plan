@@ -1,16 +1,16 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { ExampleView, VIEW_TYPE_EXAMPLE } from "./view";
+import { SuccessPlanView, VIEW_TYPE_SUCCESS_PLAN } from "./view";
 
-interface MyPluginSettings {
+interface SuccessPlanPluginSettings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
+const DEFAULT_SETTINGS: SuccessPlanPluginSettings = {
 	mySetting: 'default'
 }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class SuccessPlanPlugin extends Plugin {
+	settings: SuccessPlanPluginSettings;
 
 	async onload() {
 		console.log('onload');
@@ -18,8 +18,8 @@ export default class MyPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerView(
-			VIEW_TYPE_EXAMPLE,
-			(leaf) => new ExampleView(leaf)
+			VIEW_TYPE_SUCCESS_PLAN,
+			(leaf) => new SuccessPlanView(leaf)
 		  );
 
 		// This creates an icon in the left ribbon.
@@ -101,22 +101,22 @@ export default class MyPlugin extends Plugin {
 	}
 
 	async activateView() {
-		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXAMPLE);
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_SUCCESS_PLAN);
 	
 		await this.app.workspace.getLeaf(true).setViewState({
-		  type: VIEW_TYPE_EXAMPLE,
+		  type: VIEW_TYPE_SUCCESS_PLAN,
 		  active: true,
 		});
 	
 		this.app.workspace.revealLeaf(
-		  this.app.workspace.getLeavesOfType(VIEW_TYPE_EXAMPLE)[0]
+		  this.app.workspace.getLeavesOfType(VIEW_TYPE_SUCCESS_PLAN)[0]
 		);
 	  }
 
 	onunload() {
 		console.log("unload");
 
-		this.app.workspace.detachLeavesOfType(VIEW_TYPE_EXAMPLE);
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_SUCCESS_PLAN);
 	}
 
 	async loadSettings() {
@@ -145,9 +145,9 @@ class SampleModal extends Modal {
 }
 
 class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+	plugin: SuccessPlanPlugin;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: SuccessPlanPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
