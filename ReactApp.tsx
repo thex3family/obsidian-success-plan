@@ -11,7 +11,7 @@ export default function ReactApp() {
   function generateList(array: any[]) {
     let result = [];
 
-    result = array.map((item, index) => <p key={ index } className={'item'} onClick={(event) => showContextMenu(event) }>{ item.name }</p>);
+    result = array.map((item, index) => <p key={ index } className={'item'} onClick={(event) => showContextMenu(event, item) }>{ item.name }</p>);
 
     return result;
   }
@@ -71,10 +71,14 @@ export default function ReactApp() {
       area: '',
       upstream: '',
       tag: '',
-      content: ''
+      non_property_content: '',
+      full_content: '',
+      file: file
      };
     
     let itemContent = await vault.cachedRead(file);
+
+    result.full_content = itemContent;
 
     console.log(file.name);
 
@@ -128,7 +132,7 @@ export default function ReactApp() {
     //console.log('*** Non-Property Content ***');
     //console.log(nonPropertyContent);
 
-    result.content = nonPropertyContent;
+    result.non_property_content = nonPropertyContent;
 
     console.log('result:', result);
 
@@ -206,24 +210,55 @@ export default function ReactApp() {
     return name.split('-')[1].trim().replace('.md', '');
   }
 
-  function showContextMenu(event: any) {
+  async function replaceTextInFile(file: TFile, fileContent: string, oldText: string, newText: string) {
+    await vault.modify(file, fileContent.replace(oldText, newText));
+  }
+
+  async function changeStatusOfSuccessPlanItem(successPlanItem: any, newStatus: string) {
+    await replaceTextInFile(
+      successPlanItem.file, 
+      successPlanItem.full_content,  
+      successPlanItem.status.toLowerCase().replaceAll(' ', '-'), 
+      newStatus
+    );
+  }
+
+  async function showContextMenu(event: any, successPlanItem: any) {
     const menu = new Menu(this.app);
 
-      menu.addItem((item) =>
+        menu.addItem((item) =>
         item
-          .setTitle("Copy")
-          .setIcon("documents")
-          .onClick(() => {
-            new Notice("Copied");
+          .setTitle("Ready to Complete")
+          .setIcon("navigate-glyph")
+          .onClick(async () => {
+            //new Notice("Ready to Complete");
+          await changeStatusOfSuccessPlanItem(successPlanItem, "ready-to-complete");
+          setSPItems(null);
+          setSPObjects(null);
           })
       );
 
       menu.addItem((item) =>
         item
-          .setTitle("Paste")
-          .setIcon("paste")
-          .onClick(() => {
-            new Notice("Pasted");
+          .setTitle("In Progress")
+          .setIcon("wrench-screwdriver-glyph")
+          .onClick(async () => {
+            //new Notice("In Progress");
+           await changeStatusOfSuccessPlanItem(successPlanItem, "in-progress");
+           setSPItems(null);
+           setSPObjects(null);
+          })
+      );
+
+      menu.addItem((item) =>
+        item
+          .setTitle("Complete")
+          .setIcon("checkmark")
+          .onClick(async () => {
+            //new Notice("Complete");
+            await changeStatusOfSuccessPlanItem(successPlanItem, "complete");
+            setSPItems(null);
+            setSPObjects(null);
           })
       );
 
