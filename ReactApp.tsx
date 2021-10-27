@@ -2,11 +2,13 @@ import * as React from "react";
 import { useApp } from "./hooks";
 import { useState, useEffect } from 'react';
 import { Menu, Notice, TFile } from 'obsidian';
+import HorizontalTabs from "HorizontalTabs";
 
 export default function ReactApp() {
   const { vault } = useApp(); // hook that gives us access to the Obsidian app object (ex. <h4>{vault.getName()}</h4>)
   const [ successPlanItems, setSPItems ] = useState(null);
   const [ successPlanObjects, setSPObjects ] = useState(null);
+  const [ activeTab, setTab ] = useState('Task');
   const BASE_GOLD = 50;
 
   function generateList(array: any[]) {
@@ -242,15 +244,12 @@ export default function ReactApp() {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
-  function getTasksOfGivenStatus(taskStatus: string) {
-    console.log('getTasks');
-
+  function getItemsOfGivenTypeAndStatus(itemType: string, itemStatus: string) {
     let result = [];
 
     for (let i = 0; i < successPlanObjects.length; i++) {
-      console.log(successPlanObjects[i]);
 
-      if (successPlanObjects[i].type == 'Task' && successPlanObjects[i].status == taskStatus) {
+      if (successPlanObjects[i].type == itemType && successPlanObjects[i].status == itemStatus) {
         result.push(successPlanObjects[i]);
       }
     }
@@ -317,6 +316,10 @@ export default function ReactApp() {
       menu.showAtMouseEvent(event);
   }
 
+  function handleTabClick(tab: string) {
+    setTab(tab);
+  }
+
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     if (!successPlanItems) { // The if statement needs to be used unless I want setState to be called on every rerender (causing that maxiumum update depth error & infinite loop)
@@ -329,14 +332,15 @@ export default function ReactApp() {
 
   return (
     <>
+      <HorizontalTabs tabClickHandler={handleTabClick} activeTab={activeTab} />
       { successPlanObjects ?
         <>
           <h3>Ready to Complete</h3>
-          { generateList(getTasksOfGivenStatus('Ready To Complete')) }
+          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Ready To Complete')) }
           <h3>In Progress</h3>
-          { generateList(getTasksOfGivenStatus('In Progress')) }
+          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'In Progress')) }
           <h3>Complete</h3>
-          { generateList(getTasksOfGivenStatus('Complete')) }
+          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Complete')) }
         </> : null
       }
     </>
