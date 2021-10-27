@@ -20,3 +20,7 @@ body {
     border: 1px solid var(--background-modifier-border);
     padding: 10px;
 }
+
+p {
+    margin: 0;
+}

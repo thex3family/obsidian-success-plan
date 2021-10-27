@@ -7,13 +7,64 @@ export default function ReactApp() {
   const { vault } = useApp(); // hook that gives us access to the Obsidian app object (ex. <h4>{vault.getName()}</h4>)
   const [ successPlanItems, setSPItems ] = useState(null);
   const [ successPlanObjects, setSPObjects ] = useState(null);
+  const BASE_GOLD = 50;
 
   function generateList(array: any[]) {
     let result = [];
 
-    result = array.map((item, index) => <p key={ index } className={'item'} onClick={(event) => showContextMenu(event, item) }>{ item.name }</p>);
+    result = array.map((item, index) => 
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} key={ index } className={'item'} onClick={(event) => showContextMenu(event, item) }>
+        <p>{ item.name }</p>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <p style={{ marginRight: '5px' }}>{ determinePunctionality(item.do_date, item.closing_date) }</p>
+          <p>+{ BASE_GOLD * item.difficulty } 💰</p>
+        </div>
+      </div>);
 
     return result;
+  }
+
+  function determinePunctionality(doDate: Date, closingDate: Date): string {
+    let todayStr = (new Date()).toLocaleDateString();
+    let doDateStr = '';
+    let closingDateStr = '';
+
+    if (doDate) {
+      doDateStr = doDate.toLocaleDateString();
+    }
+    
+    if (closingDate) {
+      closingDateStr = closingDate.toLocaleDateString();
+    }
+
+    if (doDate == undefined) {
+      return '⚠ No Target';
+    } else if (closingDate && doDateStr == closingDateStr) {
+      return '✔️ On Time!';
+    } else if (doDateStr == todayStr) {
+      return '⚠ Finish Today!';
+    } else if (closingDate < doDate) {
+      return '⭐ Early ' + Math.floor(calculateDifferenceBetweenGivenDates(closingDate, doDate)) + ' day(s)!';
+    } else if (doDate < new Date()) {
+      return '🚨 Late ' + Math.floor(calculateDifferenceBetweenGivenDates(doDate, new Date())) + ' day(s)!';
+    }
+  }
+
+  function calculateDifferenceBetweenGivenDates(date1: Date, date2: Date): number {
+    /* Attribution
+        - Article: https://www.geeksforgeeks.org/how-to-calculate-the-number-of-days-between-two-dates-in-javascript/
+        - Article Author: https://auth.geeksforgeeks.org/user/akshatyadav/articles
+        - Changes: Edited the variable names and the comments
+        - License: https://www.geeksforgeeks.org/copyright-information/ 
+    */
+
+    // Calculate the time difference between the two dates
+    var timeDifference = date2.getTime() - date1.getTime();
+      
+    // Calculate the no. of days between the two dates
+    var dayDifference = timeDifference / (1000 * 3600 * 24);
+      
+    return dayDifference;
   }
 
   function getMarkdownFiles() {
@@ -70,6 +121,7 @@ export default function ReactApp() {
       closing_date: '',
       area: '',
       upstream: '',
+      downstream: '',
       tag: '',
       non_property_content: '',
       full_content: '',
@@ -94,7 +146,7 @@ export default function ReactApp() {
     let propertyContentArray = propertyContent.split('\n');
 
     let tagProps = ['Type', 'Status', 'Difficulty', 'Tag', 'Impact'];
-    let upstreamAndDateProps = ['Upstream', 'Do Date', 'Due Date', 'Closing Date'];
+    let streamsAndDateProps = ['Upstream', 'Downstream', 'Do Date', 'Due Date', 'Closing Date'];
 
     // check what the string starts with (only difference: upstream/dates vs everything else) - dif: page vs tag
     for (let i = 0; i < propertyContentArray.length; i++) {
@@ -114,16 +166,16 @@ export default function ReactApp() {
         }
       }
 
-      for (let j = 0; j < upstreamAndDateProps.length; j++) {
-        if (propertyContentArray[i].startsWith(upstreamAndDateProps[j])) {
+      for (let j = 0; j < streamsAndDateProps.length; j++) {
+        if (propertyContentArray[i].startsWith(streamsAndDateProps[j])) {
           //console.log('Starts with a upstreamAndDateProp');
-          let key = upstreamAndDateProps[j].toLowerCase();
+          let key = streamsAndDateProps[j].toLowerCase();
           if (key.includes(' ')) {
             key = key.replace(' ', '_');
           }
           //console.log('lowercase key:', key);
           if (hasKey(result, key)) {
-            result[key] = getValueFromUpstreamOrDateStr(propertyContentArray[i]);
+            result[key] = getValueFromStreamOrDateStr(propertyContentArray[i]);
           }
         }   
       }
@@ -171,7 +223,7 @@ export default function ReactApp() {
     return result;
   }
 
-  function getValueFromUpstreamOrDateStr(text: string): any {
+  function getValueFromStreamOrDateStr(text: string): any {
     let result: string | Date;
     let secondHalf = text.split(':')[1];
     
