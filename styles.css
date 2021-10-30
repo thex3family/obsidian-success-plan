@@ -24,3 +24,8 @@ body {
 p {
     margin: 0;
 }
+
+.modal_header {
+    display: flex;
+    justify-content: center;
+}

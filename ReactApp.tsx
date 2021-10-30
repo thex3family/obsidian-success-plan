@@ -3,6 +3,7 @@ import { useApp } from "./hooks";
 import { useState, useEffect } from 'react';
 import { Menu, Notice, TFile } from 'obsidian';
 import HorizontalTabs from "HorizontalTabs";
+import { ItemModal } from "./ItemModal";
 
 export default function ReactApp() {
   const { vault } = useApp(); // hook that gives us access to the Obsidian app object (ex. <h4>{vault.getName()}</h4>)
@@ -297,6 +298,19 @@ export default function ReactApp() {
 
   async function showContextMenu(event: any, successPlanItem: any) { // TODO: Only show the option for share with family if the gamification setting is on
     const menu = new Menu(this.app);
+
+          menu.addItem((item) =>
+          item
+            .setTitle("Edit")
+            .setIcon("pencil")
+            .onClick(async () => {
+              //new Notice("Edit");
+              new ItemModal(this.app, 'EDIT', successPlanItem, (result) => {
+                new Notice(`Hello, ${result.name}!`);
+                console.log('Outputted SuccessPlanItem:', result);
+              }).open();
+            })
+        );
 
         menu.addItem((item) =>
         item
