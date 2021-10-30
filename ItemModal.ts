@@ -1,4 +1,5 @@
 import { App, Modal, Setting } from "obsidian";
+import { uppercaseFirstChar, uppercaseFirstCharOverMultipleWordsWithReplaceSeparator } from "utility";
 
 export class ItemModal extends Modal {
 
@@ -30,7 +31,7 @@ export class ItemModal extends Modal {
     new Setting(contentEl)
     .setName("Share with Famiy")
     .addToggle((toggleValue) =>
-        toggleValue.setValue(this.successPlanItem.share_with_family).onChange((value) => {
+        toggleValue.setValue(this.successPlanItem.share_with_family == "" ? false : this.successPlanItem.share_with_family).onChange((value) => {
             this.successPlanItem.share_with_family = value
         }));
 
@@ -39,9 +40,9 @@ export class ItemModal extends Modal {
     .addDropdown((cb) =>
         cb
             .addOptions({ task: "Task", project: "Project", key_result: "Key Result", goal: 'Goal' })
-            .setValue(this.successPlanItem.type.toLowerCase().replace(' ', '_'))
+            .setValue(this.successPlanItem.type ? this.successPlanItem.type.toLowerCase().replace(' ', '_') : "")
             .onChange(async (val) => {
-            this.successPlanItem.type = val
+                this.successPlanItem.type = val.includes('_') ? "Key Result" : uppercaseFirstChar(val)
             })
         );
 
@@ -50,9 +51,9 @@ export class ItemModal extends Modal {
     .addDropdown((cb) =>
         cb
           .addOptions({ s_low: "S-Low", low: "Low", medium: "Medium", high: 'High', s_high: "S-High" })
-          .setValue(this.successPlanItem.impact.toLowerCase().replaceAll(' ', '-'))
+          .setValue(this.successPlanItem.impact ? this.successPlanItem.impact.toLowerCase().replaceAll(' ', '-') : "")
           .onChange(async (val) => {
-            this.successPlanItem.impact = val
+            this.successPlanItem.impact = val.includes('_') ? uppercaseFirstCharOverMultipleWordsWithReplaceSeparator(val, '_', ' ') : uppercaseFirstChar(val)
           })
       );
 
@@ -61,9 +62,9 @@ export class ItemModal extends Modal {
     .addDropdown((cb) =>
         cb
         .addOptions({ ready_to_complete: "Ready to Complete", next_up: "Next Up", in_progress: "In Progress", complete: 'Complete', backlog: "Backlog", canceled: "Canceled" })
-        .setValue(this.successPlanItem.status.toLowerCase().replaceAll(' ', '_'))
+        .setValue(this.successPlanItem.status ? this.successPlanItem.status.toLowerCase().replaceAll(' ', '_') : "")
         .onChange(async (val) => {
-            this.successPlanItem.status = val
+            this.successPlanItem.status = val.includes('_') ? uppercaseFirstCharOverMultipleWordsWithReplaceSeparator(val, '_', ' ') : uppercaseFirstChar(val)
         })
     );
 
@@ -72,7 +73,7 @@ export class ItemModal extends Modal {
     .addSlider((cb) =>
         cb
         .setLimits(1, 10, 1)
-        .setValue(this.successPlanItem.difficulty)
+        .setValue(this.successPlanItem.difficulty ? this.successPlanItem.difficulty : null)
         .onChange(async (val) => {
             this.successPlanItem.difficulty = val
         })
@@ -84,7 +85,7 @@ export class ItemModal extends Modal {
     .addMomentFormat((cb) =>
         cb
         .setDefaultFormat("MM-DD-YYYY")
-        .setValue(this.successPlanItem.do_date ? this.successPlanItem.do_date.toLocaleDateString() : new Date())
+        .setValue(this.successPlanItem.do_date ? this.successPlanItem.do_date.toLocaleDateString() : "")
         .onChange(async (val) => {
             this.successPlanItem.do_date = new Date(val)
         })
@@ -95,7 +96,7 @@ export class ItemModal extends Modal {
     .addMomentFormat((cb) =>
         cb
         .setDefaultFormat("MM-DD-YYYY")
-        .setValue(this.successPlanItem.due_date ? this.successPlanItem.due_date.toLocaleDateString() : new Date())
+        .setValue(this.successPlanItem.due_date ? this.successPlanItem.due_date.toLocaleDateString() : "")
         .onChange(async (val) => {
             this.successPlanItem.due_date = new Date(val)
         })
@@ -106,7 +107,7 @@ export class ItemModal extends Modal {
     .addMomentFormat((cb) =>
         cb
         .setDefaultFormat("MM-DD-YYYY")
-        .setValue(this.successPlanItem.closing_date ? this.successPlanItem.closing_date.toLocaleDateString() : new Date())
+        .setValue(this.successPlanItem.closing_date ? this.successPlanItem.closing_date.toLocaleDateString() : "")
         .onChange(async (val) => {
             this.successPlanItem.closing_date = new Date(val)
         })
@@ -135,7 +136,7 @@ export class ItemModal extends Modal {
     .addDropdown((cb) =>
         cb
         .addOptions({ 25: "25 mins", 5: "5 Mins" }) 
-        .setValue(this.successPlanItem.tag)
+        .setValue(this.successPlanItem.tag ? this.successPlanItem.tag : "25")
         .onChange(async (val) => {
             this.successPlanItem.tag = parseInt(val)
         })

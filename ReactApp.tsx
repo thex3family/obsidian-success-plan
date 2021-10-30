@@ -40,8 +40,8 @@ export default function ReactApp() {
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} key={ index } className={'item'} onClick={(event) => showContextMenu(event, item) }>
         <p>{ item.name }</p>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <p style={{ marginRight: '5px' }}>{ determinePunctionality(item.do_date, item.closing_date) }</p>
-          <p>+{ BASE_GOLD * item.difficulty } 💰</p>
+          { item.do_date && item.closing_date ? <p style={{ marginRight: '5px' }}>{ determinePunctionality(item.do_date, item.closing_date) }</p>  : null}
+          { item.difficulty ? <p>+{ BASE_GOLD * item.difficulty } 💰</p> : null }
         </div>
       </div>);
 
