@@ -8,8 +8,8 @@
         "build": "esbuild main.ts --bundle --external:obsidian --outdir=.  --target=es2016 --format=cjs"
     },
     "keywords": [],
-    "author": "",
-    "license": "MIT",
+    "author": "Joshwin Greene",
+    "license": "Commons-Clause-1.0",
     "devDependencies": {
         "@types/node": "^16.11.1",
         "@types/react": "^17.0.31",
@@ -21,6 +21,8 @@
     },
     "dependencies": {
         "react": "^17.0.2",
-        "react-dom": "^17.0.2"
+        "react-dom": "^17.0.2",
+        "react-icons": "^4.3.1",
+        "react-tiny-fab": "^4.0.4"
     }
 }

@@ -24,15 +24,15 @@ export class ItemModal extends Modal {
     new Setting(contentEl)
       .setName("Name")
       .addText((text) =>
-        text.setValue(this.successPlanItem.name).onChange((value) => {
+        text.setValue(this.successPlanItem.name ? this.successPlanItem.name : "").onChange((value) => {
           this.successPlanItem.name = value
         }));
 
     new Setting(contentEl)
-    .setName("Share with Famiy")
+    .setName("Share with Family")
     .addToggle((toggleValue) =>
-        toggleValue.setValue(this.successPlanItem.share_with_family == "" ? false : this.successPlanItem.share_with_family).onChange((value) => {
-            this.successPlanItem.share_with_family = value
+        toggleValue.setValue(this.successPlanItem.share_with_family == "" ? false : this.successPlanItem.share_with_family === 'true').onChange((value) => {
+            this.successPlanItem.share_with_family = value.toString()
         }));
 
     new Setting(contentEl)
@@ -146,7 +146,7 @@ export class ItemModal extends Modal {
     .setName("Notes")
     .addTextArea((cb) =>
         cb 
-        .setValue(this.successPlanItem.non_property_content.trim())
+        .setValue(this.successPlanItem.non_property_content ? this.successPlanItem.non_property_content.trim() : "")
         .onChange(async (val) => {
             this.successPlanItem.non_property_content = val
         })

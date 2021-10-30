@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import { Menu, Notice, TFile } from 'obsidian';
 import HorizontalTabs from "HorizontalTabs";
 import { ItemModal } from "./ItemModal";
+import { uppercaseFirstChar  } from "utility";
+import { Fab } from 'react-tiny-fab';
+import { MdAdd } from "react-icons/md";
+import 'react-tiny-fab/dist/styles.css';
 
 export default function ReactApp() {
   const { vault } = useApp(); // hook that gives us access to the Obsidian app object (ex. <h4>{vault.getName()}</h4>)
@@ -134,8 +138,7 @@ export default function ReactApp() {
   async function parseFile(file: TFile) { // Will ignore Associations for now
     let result = { 
       name: getItemTitleOnly(file.name),
-      share_with_family: '',
-      family_connection: '',
+      share_with_family: '', // the boolean value will be in the form of a string
       impact: '',
       type: '',
       status: '',
@@ -203,6 +206,13 @@ export default function ReactApp() {
           }
         }   
       }
+
+      if (propertyContentArray[i].startsWith("Share With Family")) {
+        let fullLine = propertyContentArray[i];
+        let secondHalf = fullLine.split(':')[1].trim();
+
+        result.share_with_family = secondHalf == "" ? 'false' : secondHalf;
+      }
     }
 
     //console.log('*** Non-Property Content ***');
@@ -262,10 +272,6 @@ export default function ReactApp() {
     return result;
   }
 
-  function uppercaseFirstChar(text: string): string {
-    return text.charAt(0).toUpperCase() + text.slice(1);
-  }
-
   function getItemsOfGivenTypeAndStatus(itemType: string, itemStatus: string) {
     let result = [];
 
@@ -287,7 +293,7 @@ export default function ReactApp() {
     await vault.modify(file, fileContent.replace(oldText, newText));
   }
 
-  async function changeStatusOfSuccessPlanItem(successPlanItem: any, newStatus: string) {
+  async function changeStatusOfSuccessPlanItem(successPlanItem: any, newStatus: string) { // TODO: This assumes that I know the item's status (this relates to me editing items)
     await replaceTextInFile(
       successPlanItem.file, 
       successPlanItem.full_content,  
@@ -307,7 +313,7 @@ export default function ReactApp() {
               //new Notice("Edit");
               new ItemModal(this.app, 'EDIT', successPlanItem, (result) => {
                 new Notice(`Hello, ${result.name}!`);
-                console.log('Outputted SuccessPlanItem:', result);
+                console.log('Outputted SuccessPlanItem:', result); 
               }).open();
             })
         );
@@ -442,6 +448,29 @@ export default function ReactApp() {
     return result;
   }
 
+  function FABClick() {
+    let defaultItem = { 
+      name: '',
+      share_with_family: '',
+      impact: '',
+      type: '',
+      status: "Ready To Complete",
+      difficulty: '',
+      do_date: '',
+      due_date: '',
+      closing_date: '',
+      area: '',
+      upstream: '',
+      downstream: '',
+      tag: 25,
+     };
+
+    new ItemModal(this.app, 'CREATE', defaultItem, (result) => {
+      new Notice(`Hello, ${result.name}!`);
+      console.log('Outputted SuccessPlanItem:', result); 
+    }).open();
+  }
+
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     if (!successPlanItems) { // The if statement needs to be used unless I want setState to be called on every rerender (causing that maxiumum update depth error & infinite loop)
@@ -460,6 +489,14 @@ export default function ReactApp() {
           { generateSections() }
         </> : null
       }
+      <Fab
+        mainButtonStyles={{ backgroundColor: '#7F6DF2' }}
+        style={{ bottom: 15, right: 15 }}
+        icon={<MdAdd />}
+        alwaysShowTitle={false}
+        onClick={() => FABClick()}
+      >
+    </Fab>
     </>
   );
 };
