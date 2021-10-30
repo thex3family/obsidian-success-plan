@@ -274,7 +274,7 @@ export default function ReactApp() {
     );
   }
 
-  async function showContextMenu(event: any, successPlanItem: any) {
+  async function showContextMenu(event: any, successPlanItem: any) { // TODO: Only show the option for share with family if the gamification setting is on
     const menu = new Menu(this.app);
 
         menu.addItem((item) =>
@@ -284,6 +284,18 @@ export default function ReactApp() {
           .onClick(async () => {
             //new Notice("Ready to Complete");
           await changeStatusOfSuccessPlanItem(successPlanItem, "ready-to-complete");
+          setSPItems(null);
+          setSPObjects(null);
+          })
+      );
+
+      menu.addItem((item) =>
+        item
+          .setTitle("Next Up")
+          .setIcon("right-chevron-glyph")
+          .onClick(async () => {
+            //new Notice("Next Up");
+          await changeStatusOfSuccessPlanItem(successPlanItem, "next-up");
           setSPItems(null);
           setSPObjects(null);
           })
@@ -313,6 +325,30 @@ export default function ReactApp() {
           })
       );
 
+      menu.addItem((item) =>
+        item
+          .setTitle("Backlog")
+          .setIcon("box-glyph")
+          .onClick(async () => {
+            //new Notice("Backlog");
+            await changeStatusOfSuccessPlanItem(successPlanItem, "backlog");
+            setSPItems(null);
+            setSPObjects(null);
+          })
+      );
+
+      menu.addItem((item) =>
+        item
+          .setTitle("Canceled")
+          .setIcon("cross")
+          .onClick(async () => {
+            //new Notice("Canceled");
+            await changeStatusOfSuccessPlanItem(successPlanItem, "canceled");
+            setSPItems(null);
+            setSPObjects(null);
+          })
+      );
+
       menu.showAtMouseEvent(event);
   }
 
@@ -337,10 +373,16 @@ export default function ReactApp() {
         <>
           <h3>Ready to Complete</h3>
           { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Ready To Complete')) }
+          <h3>Next Up</h3>
+          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Next Up')) }
           <h3>In Progress</h3>
           { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'In Progress')) }
           <h3>Complete</h3>
           { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Complete')) }
+          <h3>Backlog</h3>
+          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Backlog')) }
+          <h3>Canceled</h3>
+          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Canceled')) }
         </> : null
       }
     </>
