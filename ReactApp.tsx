@@ -11,6 +11,27 @@ export default function ReactApp() {
   const [ activeTab, setTab ] = useState('Task');
   const BASE_GOLD = 50;
 
+  let baseHideLedgerValues = { ready_to_complete: true, next_up: true, in_progress: true, complete: true, backlog: true, canceled: true };
+  const [ taskHideLedger, setTaskHideLedger ] = useState({ ...baseHideLedgerValues, next_up: false, in_progress: false });
+  const [ projectHideLedger, setProjectHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
+  const [ keyResultHideLedger, setKeyResultHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
+  const [ goalHideLedger, setGoalHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
+
+  function getCurrentTabHideLedger() {
+    switch (activeTab) {
+      case 'Task':
+        return taskHideLedger;
+      case 'Project':
+        return projectHideLedger;
+      case 'Key Result':
+        return keyResultHideLedger;
+      case 'Goal':
+        return goalHideLedger;
+      default:
+        break;
+    }
+  }
+
   function generateList(array: any[]) {
     let result = [];
 
@@ -356,6 +377,57 @@ export default function ReactApp() {
     setTab(tab);
   }
 
+  function handleSectionHideClick(section: string) {
+
+    switch(activeTab) {
+      case 'Task':
+        setTaskHideLedger({ ...taskHideLedger, [section]: !getTabLedgerSectionHideValue(section) });
+        break;
+      case 'Project':
+        setProjectHideLedger({ ...projectHideLedger, [section]: !getTabLedgerSectionHideValue(section) });
+        break;
+      case 'Key Result':
+        setKeyResultHideLedger({ ...keyResultHideLedger, [section]: !getTabLedgerSectionHideValue(section) });
+        break;
+      case 'Goal':
+        setGoalHideLedger({ ...goalHideLedger, [section]: !getTabLedgerSectionHideValue(section) });
+        break;
+      default:
+        break;
+    } 
+  }
+
+  function getTabLedgerSectionHideValue(section: string) {
+    let tabLedger = getCurrentTabHideLedger();
+
+    if (hasKey(tabLedger, section)) {
+      return tabLedger[section]
+    }
+  }
+
+  function generateSections() {
+    const SECTIONS = ['Ready To Complete', 'Next Up', 'In Progress', 'Complete', 'Backlog', 'Canceled'];
+    let result = []; 
+
+    for (let i = 0; i < SECTIONS.length; i++) {
+      let lowercaseSection = SECTIONS[i].toLowerCase().replace(' ', '_');
+
+      let list = generateList(getItemsOfGivenTypeAndStatus(activeTab, SECTIONS[i]));
+
+      result.push(
+        <div key={ i } style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <h3 style={{ marginRight: 5 }}>{ SECTIONS[i].includes('To') ? SECTIONS[i].replace('To', 'to') : SECTIONS[i] }</h3>
+              { list.length != 0 ? <p onClick={ () => handleSectionHideClick(lowercaseSection) }>{ getTabLedgerSectionHideValue(lowercaseSection) ? 'unhide' : 'hide' }</p> : null }
+          </div>
+          { getTabLedgerSectionHideValue(lowercaseSection) ? null : list }
+        </div>
+      )
+    }
+
+    return result;
+  }
+
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     if (!successPlanItems) { // The if statement needs to be used unless I want setState to be called on every rerender (causing that maxiumum update depth error & infinite loop)
@@ -371,18 +443,7 @@ export default function ReactApp() {
       <HorizontalTabs tabClickHandler={handleTabClick} activeTab={activeTab} />
       { successPlanObjects ?
         <>
-          <h3>Ready to Complete</h3>
-          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Ready To Complete')) }
-          <h3>Next Up</h3>
-          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Next Up')) }
-          <h3>In Progress</h3>
-          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'In Progress')) }
-          <h3>Complete</h3>
-          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Complete')) }
-          <h3>Backlog</h3>
-          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Backlog')) }
-          <h3>Canceled</h3>
-          { generateList(getItemsOfGivenTypeAndStatus(activeTab, 'Canceled')) }
+          { generateSections() }
         </> : null
       }
     </>
