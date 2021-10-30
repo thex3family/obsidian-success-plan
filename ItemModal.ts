@@ -31,7 +31,7 @@ export class ItemModal extends Modal {
     new Setting(contentEl)
     .setName("Share with Family")
     .addToggle((toggleValue) =>
-        toggleValue.setValue(this.successPlanItem.share_with_family == "" ? false : this.successPlanItem.share_with_family === 'true').onChange((value) => {
+        toggleValue.setValue(this.successPlanItem.share_with_family === 'True').onChange((value) => {
             this.successPlanItem.share_with_family = value.toString()
         }));
 
@@ -131,16 +131,18 @@ export class ItemModal extends Modal {
         // TODO: In the onChange method, search for the items that corresponds to the item that is being looked at (ex. Projects if this is a Task)
     );
 
-    new Setting(contentEl)
-    .setName("Tag (Mins Per Pomodoro)")
-    .addDropdown((cb) =>
-        cb
-        .addOptions({ 25: "25 mins", 5: "5 Mins" }) 
-        .setValue(this.successPlanItem.tag ? this.successPlanItem.tag : "25")
-        .onChange(async (val) => {
-            this.successPlanItem.tag = parseInt(val)
-        })
-    );
+    if (this.successPlanItem.type == "Task") {
+        new Setting(contentEl)
+        .setName("Tag (Mins Per Pomodoro)")
+        .addDropdown((cb) =>
+            cb
+            .addOptions({ 25: "25 mins", 5: "5 Mins" }) 
+            .setValue(this.successPlanItem.tag != "" ? this.successPlanItem.tag : "")
+            .onChange(async (val) => {
+                this.successPlanItem.tag = parseInt(val)
+            })
+        );
+    }
 
     new Setting(contentEl)
     .setName("Notes")

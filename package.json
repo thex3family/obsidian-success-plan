@@ -9,7 +9,7 @@
     },
     "keywords": [],
     "author": "Joshwin Greene",
-    "license": "Commons-Clause-1.0",
+    "license": "Commons-Clause-1.0 and Apache-2.0",
     "devDependencies": {
         "@types/node": "^16.11.1",
         "@types/react": "^17.0.31",

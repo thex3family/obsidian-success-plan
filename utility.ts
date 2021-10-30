@@ -10,3 +10,7 @@ export function uppercaseFirstCharOverMultipleWordsWithReplaceSeparator(text: st
     }
     return array.join(newSeparator);
 }
+
+export function lowercaseAndReplaceSep(text: string, oldSeparator: string, newSeparator: string) {
+    return text.toLowerCase().replaceAll(oldSeparator, newSeparator);
+}

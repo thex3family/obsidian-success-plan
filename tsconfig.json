@@ -14,7 +14,8 @@
       "dom",
       "es5",
       "scripthost",
-      "es2015"
+      "es2015",
+      "ES2021.String"
     ],
   },
   "include": [

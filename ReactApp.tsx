@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Menu, Notice, TFile } from 'obsidian';
 import HorizontalTabs from "HorizontalTabs";
 import { ItemModal } from "./ItemModal";
-import { uppercaseFirstChar  } from "utility";
+import { uppercaseFirstChar, lowercaseAndReplaceSep } from "utility";
 import { Fab } from 'react-tiny-fab';
 import { MdAdd } from "react-icons/md";
 import 'react-tiny-fab/dist/styles.css';
@@ -155,6 +155,8 @@ export default function ReactApp() {
       file: file
      };
     
+    //console.log('file path:', file.path);
+
     let itemContent = await vault.cachedRead(file);
 
     result.full_content = itemContent;
@@ -172,7 +174,7 @@ export default function ReactApp() {
 
     let propertyContentArray = propertyContent.split('\n');
 
-    let tagProps = ['Type', 'Status', 'Difficulty', 'Tag', 'Impact'];
+    let tagProps = ['Type', 'Status', 'Difficulty', 'Tag', 'Impact', 'Share with Family'];
     let streamsAndDateProps = ['Upstream', 'Downstream', 'Do Date', 'Due Date', 'Closing Date'];
 
     // check what the string starts with (only difference: upstream/dates vs everything else) - dif: page vs tag
@@ -183,7 +185,7 @@ export default function ReactApp() {
         if (propertyContentArray[i].startsWith(tagProps[k])) {
           //console.log('Starts with a tagProp');
           //console.log('Starts with a tag');
-          let key = tagProps[k].toLowerCase();
+          let key = tagProps[k].includes(' ') ? lowercaseAndReplaceSep('Share with Family', ' ', '_') : tagProps[k].toLowerCase();
           //console.log('lowercase key:', key);
           if (hasKey(result, key)) {
             //console.log('hasKey called');
@@ -205,13 +207,6 @@ export default function ReactApp() {
             result[key] = getValueFromStreamOrDateStr(propertyContentArray[i]);
           }
         }   
-      }
-
-      if (propertyContentArray[i].startsWith("Share With Family")) {
-        let fullLine = propertyContentArray[i];
-        let secondHalf = fullLine.split(':')[1].trim();
-
-        result.share_with_family = secondHalf == "" ? 'false' : secondHalf;
       }
     }
 
@@ -302,6 +297,11 @@ export default function ReactApp() {
     );
   }
 
+  function resetSuccessPlanItemState() {
+    setSPItems(null);
+    setSPObjects(null);
+  }
+
   async function showContextMenu(event: any, successPlanItem: any) { // TODO: Only show the option for share with family if the gamification setting is on
     const menu = new Menu(this.app);
 
@@ -325,8 +325,7 @@ export default function ReactApp() {
           .onClick(async () => {
             //new Notice("Ready to Complete");
           await changeStatusOfSuccessPlanItem(successPlanItem, "ready-to-complete");
-          setSPItems(null);
-          setSPObjects(null);
+          resetSuccessPlanItemState();
           })
       );
 
@@ -337,8 +336,7 @@ export default function ReactApp() {
           .onClick(async () => {
             //new Notice("Next Up");
           await changeStatusOfSuccessPlanItem(successPlanItem, "next-up");
-          setSPItems(null);
-          setSPObjects(null);
+          resetSuccessPlanItemState();
           })
       );
 
@@ -349,8 +347,7 @@ export default function ReactApp() {
           .onClick(async () => {
             //new Notice("In Progress");
            await changeStatusOfSuccessPlanItem(successPlanItem, "in-progress");
-           setSPItems(null);
-           setSPObjects(null);
+           resetSuccessPlanItemState();
           })
       );
 
@@ -361,8 +358,7 @@ export default function ReactApp() {
           .onClick(async () => {
             //new Notice("Complete");
             await changeStatusOfSuccessPlanItem(successPlanItem, "complete");
-            setSPItems(null);
-            setSPObjects(null);
+            resetSuccessPlanItemState();
           })
       );
 
@@ -373,8 +369,7 @@ export default function ReactApp() {
           .onClick(async () => {
             //new Notice("Backlog");
             await changeStatusOfSuccessPlanItem(successPlanItem, "backlog");
-            setSPItems(null);
-            setSPObjects(null);
+            resetSuccessPlanItemState();
           })
       );
 
@@ -385,8 +380,7 @@ export default function ReactApp() {
           .onClick(async () => {
             //new Notice("Canceled");
             await changeStatusOfSuccessPlanItem(successPlanItem, "canceled");
-            setSPItems(null);
-            setSPObjects(null);
+            resetSuccessPlanItemState();
           })
       );
 
@@ -448,12 +442,49 @@ export default function ReactApp() {
     return result;
   }
 
+  function convertDateStringToFormat(dateStr: string) {
+    let resultArray = dateStr.split('-');
+
+    for (let i = 0; i < resultArray.length; i++) {
+      resultArray[i] = parseInt(resultArray[i]) < 10 ? ("0" + resultArray[i]) : resultArray[i]; 
+    }
+
+    return resultArray.join('-');
+  }
+
+  function prepareFileContent(successPlanItem: any) {
+
+    let items: string = "Type: \#type/" + lowercaseAndReplaceSep(successPlanItem.type, ' ', '-') + "\n\n" + 
+    "Share with Family: " + (successPlanItem.share_with_family != "" ? ("\#share-with-family/" + (successPlanItem.share_with_family ? 'true' : 'false')) : "") + "\n\n" +
+    "Upstream: " + successPlanItem.upstream + "\n\n" +
+    "Downstream: " + successPlanItem.upstream + "\n\n" +
+    "Impact: " + (successPlanItem.impact != "" ? ("\#impact/" + lowercaseAndReplaceSep(successPlanItem.impact, ' ', '-')) : "") + "\n\n" +
+    "Status: " + (successPlanItem.status != "" ? ("\#status/" + lowercaseAndReplaceSep(successPlanItem.status, ' ', '-')) : "") + "\n\n" +
+    "Do Date: " + (successPlanItem.do_date != "" ? ("[[" + convertDateStringToFormat(successPlanItem.do_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Due Date: " + (successPlanItem.due_date != "" ? ("[[" + convertDateStringToFormat(successPlanItem.due_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Closing Date: " + (successPlanItem.closing_date != "" ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Difficulty: " + (successPlanItem.difficulty != "" ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
+    "Tag: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "") + "\n\n" +
+    "---\n\n" +
+    "Notes\n" +
+    "-";
+
+    //console.log("items:", items);    
+    return items;
+  }
+
+  async function createSuccessPlanItem(data: any) { // ex path "Success Plan/Key Results/Key Result - First KR.md"
+    //prepareFileContent(data); // just for testing
+    await vault.create("Success Plan/" + data.type + "s" + "/" + data.type + " - " + data.name + ".md", prepareFileContent(data));
+    resetSuccessPlanItemState();
+  }
+
   function FABClick() {
     let defaultItem = { 
       name: '',
       share_with_family: '',
       impact: '',
-      type: '',
+      type: activeTab,
       status: "Ready To Complete",
       difficulty: '',
       do_date: '',
@@ -462,12 +493,13 @@ export default function ReactApp() {
       area: '',
       upstream: '',
       downstream: '',
-      tag: 25,
+      tag: '',
      };
 
-    new ItemModal(this.app, 'CREATE', defaultItem, (result) => {
-      new Notice(`Hello, ${result.name}!`);
+    new ItemModal(this.app, 'CREATE', defaultItem, async (result) => {
+      new Notice(`New ${result.type} Created`);
       console.log('Outputted SuccessPlanItem:', result); 
+      await createSuccessPlanItem(result);
     }).open();
   }
 
