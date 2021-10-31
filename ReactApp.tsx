@@ -161,7 +161,7 @@ export default function ReactApp() {
 
     result.full_content = itemContent;
 
-    console.log(file.name);
+    //console.log(file.name);
 
     // split using '---' (use the first element to get the value of the other properties besides content)
     let contentArray = itemContent.split('---');
@@ -215,7 +215,7 @@ export default function ReactApp() {
 
     result.non_property_content = nonPropertyContent;
 
-    console.log('result:', result);
+    //console.log('result:', result);
 
     return result;
   }
@@ -297,6 +297,11 @@ export default function ReactApp() {
     );
   }
 
+  async function updateSuccessPlanItem(successPlanItem: any) {
+    await vault.modify(successPlanItem.file, prepareFileContent(successPlanItem));
+    resetSuccessPlanItemState();
+  }
+
   function resetSuccessPlanItemState() {
     setSPItems(null);
     setSPObjects(null);
@@ -311,9 +316,10 @@ export default function ReactApp() {
             .setIcon("pencil")
             .onClick(async () => {
               //new Notice("Edit");
-              new ItemModal(this.app, 'EDIT', successPlanItem, (result) => {
-                new Notice(`Hello, ${result.name}!`);
-                console.log('Outputted SuccessPlanItem:', result); 
+              new ItemModal(this.app, 'EDIT', successPlanItem, async (result) => {
+                new Notice(`Updated File: ${result.type} - ${result.name}`);
+                console.log('Outputted SuccessPlanItem:', result);
+                await updateSuccessPlanItem(result);
               }).open();
             })
         );
@@ -452,22 +458,28 @@ export default function ReactApp() {
     return resultArray.join('-');
   }
 
+  function isNotBlankOrUndefined(value: any) {
+    return value != "" && value != undefined;
+  }
+
   function prepareFileContent(successPlanItem: any) {
 
+    //console.log('prepareFileContent');
+    //console.log('successPlanitem:', successPlanItem);
+
     let items: string = "Type: \#type/" + lowercaseAndReplaceSep(successPlanItem.type, ' ', '-') + "\n\n" + 
-    "Share with Family: " + (successPlanItem.share_with_family != "" ? ("\#share-with-family/" + (successPlanItem.share_with_family ? 'true' : 'false')) : "") + "\n\n" +
-    "Upstream: " + successPlanItem.upstream + "\n\n" +
-    "Downstream: " + successPlanItem.upstream + "\n\n" +
-    "Impact: " + (successPlanItem.impact != "" ? ("\#impact/" + lowercaseAndReplaceSep(successPlanItem.impact, ' ', '-')) : "") + "\n\n" +
-    "Status: " + (successPlanItem.status != "" ? ("\#status/" + lowercaseAndReplaceSep(successPlanItem.status, ' ', '-')) : "") + "\n\n" +
-    "Do Date: " + (successPlanItem.do_date != "" ? ("[[" + convertDateStringToFormat(successPlanItem.do_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
-    "Due Date: " + (successPlanItem.due_date != "" ? ("[[" + convertDateStringToFormat(successPlanItem.due_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
-    "Closing Date: " + (successPlanItem.closing_date != "" ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
-    "Difficulty: " + (successPlanItem.difficulty != "" ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
+    "Share with Family: " + (isNotBlankOrUndefined(successPlanItem.share_with_family) ? ("\#share-with-family/" + (successPlanItem.share_with_family === 'True' ? 'true' : 'false')) : "") + "\n\n" +
+    "Upstream: " + (isNotBlankOrUndefined(successPlanItem.upstream) ? ("[[" + successPlanItem.upstream + "]]") : "") + "\n\n" +
+    "Downstream: " + (isNotBlankOrUndefined(successPlanItem.downstream) ? ("[[" + successPlanItem.downstream + "]]") : "") + "\n\n" +
+    "Impact: " + (isNotBlankOrUndefined(successPlanItem.impact) ? ("\#impact/" + lowercaseAndReplaceSep(successPlanItem.impact, ' ', '-')) : "") + "\n\n" +
+    "Status: " + (isNotBlankOrUndefined(successPlanItem.status) ? ("\#status/" + lowercaseAndReplaceSep(successPlanItem.status, ' ', '-')) : "") + "\n\n" +
+    "Do Date: " + (isNotBlankOrUndefined(successPlanItem.do_date) ? ("[[" + convertDateStringToFormat(successPlanItem.do_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Due Date: " + (isNotBlankOrUndefined(successPlanItem.due_date) ? ("[[" + convertDateStringToFormat(successPlanItem.due_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Closing Date: " + (isNotBlankOrUndefined(successPlanItem.closing_date) ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Difficulty: " + (isNotBlankOrUndefined(successPlanItem.difficulty) ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
     "Tag: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "") + "\n\n" +
     "---\n\n" +
-    "Notes\n" +
-    "-";
+    successPlanItem.non_property_content;
 
     //console.log("items:", items);    
     return items;
@@ -482,7 +494,7 @@ export default function ReactApp() {
   function FABClick() {
     let defaultItem = { 
       name: '',
-      share_with_family: '',
+      share_with_family: "False",
       impact: '',
       type: activeTab,
       status: "Ready To Complete",
@@ -493,7 +505,8 @@ export default function ReactApp() {
       area: '',
       upstream: '',
       downstream: '',
-      tag: '',
+      tag: 25,
+      non_property_content: '\n\nNotes\n-'
      };
 
     new ItemModal(this.app, 'CREATE', defaultItem, async (result) => {

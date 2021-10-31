@@ -68,17 +68,19 @@ export class ItemModal extends Modal {
         })
     );
 
-    new Setting(contentEl)
-    .setName("Difficulty")
-    .addSlider((cb) =>
-        cb
-        .setLimits(1, 10, 1)
-        .setValue(this.successPlanItem.difficulty ? this.successPlanItem.difficulty : null)
-        .onChange(async (val) => {
-            this.successPlanItem.difficulty = val
-        })
-        .setDynamicTooltip()
-    );
+    if (this.successPlanItem.type == "Task") {
+        new Setting(contentEl)
+        .setName("Difficulty")
+        .addSlider((cb) =>
+            cb
+            .setLimits(1, 10, 1)
+            .setValue(this.successPlanItem.difficulty ? this.successPlanItem.difficulty : null)
+            .onChange(async (val) => {
+                this.successPlanItem.difficulty = val
+            })
+            .setDynamicTooltip()
+        );
+    }
 
     new Setting(contentEl)
     .setName("Do Date")
