@@ -322,8 +322,15 @@ export default function ReactApp(settings: any) {
     );
   }
 
+  async function postWinIfCompleteAndSharedWithFamily(successPlanItem: any) {
+    if (successPlanItem.status == "Complete" && successPlanItem.share_with_family === 'true') {
+      await addWin({ ...successPlanItem, share_with_family: true });
+    }
+  }
+
   async function updateSuccessPlanItem(successPlanItem: any) {
     await vault.modify(successPlanItem.file, prepareFileContent(successPlanItem));
+    await postWinIfCompleteAndSharedWithFamily(successPlanItem);
     resetSuccessPlanItemState();
   }
 
@@ -525,13 +532,14 @@ export default function ReactApp(settings: any) {
   async function createSuccessPlanItem(data: any) { // ex path "Success Plan/Key Results/Key Result - First KR.md"
     //prepareFileContent(data); // just for testing
     await vault.create("Success Plan/" + data.type + "s" + "/" + data.type + " - " + data.name + ".md", prepareFileContent(data));
+    await postWinIfCompleteAndSharedWithFamily(data);
     resetSuccessPlanItemState();
   }
 
   function FABClick() {
     let defaultItem = { 
       name: '',
-      share_with_family: "False",
+      share_with_family: "false",
       impact: '',
       type: activeTab,
       status: "Ready To Start",

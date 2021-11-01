@@ -31,7 +31,7 @@ export class ItemModal extends Modal {
     new Setting(contentEl)
     .setName("Share with Family")
     .addToggle((toggleValue) =>
-        toggleValue.setValue(this.successPlanItem.share_with_family === 'True').onChange((value) => {
+        toggleValue.setValue(this.successPlanItem.share_with_family === 'true').onChange((value) => {
             this.successPlanItem.share_with_family = value.toString()
         }));
 
