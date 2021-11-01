@@ -20,9 +20,9 @@ After you have shared the win, you will see the win in the "Recent Wins" table o
 
 ![player page](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/obsidian-to-make-work-fun.png)
 
-## Getting Started (After it is accepted to Obsidian's Community of Plugins)
+## Getting Started
 
-1. Install the plugin by going to the Communtiy Plugins area in Obsidian
+1. Install the plugin manually or via the Community Plugins area in Obsidian (after it is officially added to Obsidian's Community of Plugins)
 
 2. Create a Success Plan directory in your vault and create subfolders for each type of item ([Read the directory section of this file](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/success-plan-dir-struc-and-tags.md))
 
@@ -32,7 +32,7 @@ After you have shared the win, you will see the win in the "Recent Wins" table o
 
 (**Follow the following steps if you wish to push your wins to Make Work Fun)**
 
-1. Create an account on [Make Work Fun](https://www.makework.fun/) if you don't already have one. Created a database using either the FREE [Gamify your Life](https://www.producthunt.com/posts/gamify-your-life) package or a custom-made database that is [in line](https://academy.co-x3.com/en/articles/5619383-how-to-connect-any-notion-database-to-the-app) with the Make Work Fun / Co-x3 Family Connection app.
+1. Create an account on [Make Work Fun](https://www.makework.fun/) if you don't already have one. Create a custom-made database that is [in line](https://academy.co-x3.com/en/articles/5619383-how-to-connect-any-notion-database-to-the-app) with the Make Work Fun / Co-x3 Family Connection app or use the Success Plan database that's a part of the FREE [Gamify your Life](https://www.producthunt.com/posts/gamify-your-life) package.
 
 3. Create a a Notion integration for this plugin ([Read Steps 1 and 2](https://developers.notion.com/docs/getting-started))
 
@@ -46,11 +46,11 @@ I know of a couple of bugs. So, YMMV. However, just don’t use apostrophes or d
 
 ## Features
 
-- List and Show/Hide Success Plan items that can be found in the Success Plan directory: ![Success](https://img.shields.io/badge/-success-brightgreen)
+- List and Show/Hide Success Plan items that can be found in the Success Plan directory ![Success](https://img.shields.io/badge/-success-brightgreen)
 - Easily change the status of Success Plan items by clicking and selecting the new status (ex. In Progress) ![Success](https://img.shields.io/badge/-success-brightgreen)
-- Create Success Plan items using the floating action button to the bottom right: ![Success](https://img.shields.io/badge/-success-brightgreen)
-- Edit Success Plan Items by clicking an item and clicking on "Edit" : ![Success](https://img.shields.io/badge/-success-brightgreen)
-- Push wins to Make Work Fun (very basic at the moment): ![Success](https://img.shields.io/badge/-success-brightgreen)
+- Create Success Plan items using the floating action button to the bottom right ![Success](https://img.shields.io/badge/-success-brightgreen)
+- Edit Success Plan Items by clicking an item and clicking on "Edit" ![Success](https://img.shields.io/badge/-success-brightgreen)
+- Push wins to Make Work Fun (very basic at the moment) ![Success](https://img.shields.io/badge/-success-brightgreen)
 
 ## Coming Soon
 
