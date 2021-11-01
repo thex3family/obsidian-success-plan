@@ -27,7 +27,7 @@ export default class SuccessPlanPlugin extends Plugin {
 		  );
 
 		// This creates an icon in the left ribbon.
-		let ribbonIconEl = this.addRibbonIcon('dice', 'Success Plan Plugin', (evt: MouseEvent) => { // TODO: Find a relevant icon
+		let ribbonIconEl = this.addRibbonIcon('navigate-glyph', 'Success Plan Plugin', (evt: MouseEvent) => { // TODO: Find a relevant icon
 			this.activateView();
 		});
 		// Perform additional things with the ribbon
@@ -91,7 +91,7 @@ class SuccessPlanSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Notion Integration Key')
-			.setDesc('This is used to push completed items to a Notion database that you own.')
+			.setDesc('This is used to push wins that you wish to share with the Co-x3 community to a Notion database that you own so that it is posted to Make Work Fun.')
 			.addText(text => text
 				.setPlaceholder('Enter your secret key')
 				.setValue(this.plugin.settings.notionIntegrationKey)
