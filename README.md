@@ -26,14 +26,14 @@ After you have shared the win, you will see the win in the "Recent Wins" table o
 
 2. Open the plugin's pane/view by clicking on its icon on the left hand bar/ribbon
 
-3. Create a Notion database and a Notion integration ([Read Steps 1 and 2](https://developers.notion.com/docs/getting-started))
+3. Create a Success Plan directory in your vault and create subfolders for each type of item ([Read the directory section of this file](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/success-plan-dir-struc-and-tags.md))
 
-4. Enter the Notion integration key to the "Notion Integration Key" text box on the Settings tab for this plugin 
+4. Add the above file to your vault so you get access to the tags
 
-5. Enter the database id to the "Notion Database ID" text box on the Settings tab for this plugin
+(**Follow the following steps if you wish to push your wins to Make Work Fun**)
 
-6. Create a Success Plan directory in your vault and create subfolders for each type of item ([Read the directory section of this file](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/success-plan-dir-struc-and-tags.md))
+1. Create a Notion database and a Notion integration ([Read Steps 1 and 2](https://developers.notion.com/docs/getting-started))
 
-7. Add the above file to your vault so you get access to the tags
+2. Enter the Notion integration key to the "Notion Integration Key" text box on the Settings tab for this plugin 
 
-
+3. Enter the database id to the "Notion Database ID" text box on the Settings tab for this plugin
