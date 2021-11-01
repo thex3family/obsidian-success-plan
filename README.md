@@ -1,57 +1,19 @@
-## Obsidian Sample Plugin
+## Success Plan for Obsidian
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+![Preview](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/obsidian-success-plan-preview.png)
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+> This plugin was developed by [Joshwin Greene](https://github.com/joshwingreene) in collaboration with [Conrad Lin](https://conradlin.com/)(Designer of the Success Plan Framework) and the [Co-x3 Family](https://join.co-x3.com/). If you would like to show Joshwin your appreciation, you can do so by buying him a [coffee](https://ko-fi.com/joshwingreene). If you are a fan of what Conrad, Joshwin, and the rest of the Co-x3 Family are doing, please support us by becoming a one-time or monthly [Patron](https://toolbox.co-x3.com/support-us). Also, if you are interested in being a part of a community of co-creators and collaborators, then we would be happy to have you. [Learn More](https://join.co-x3.com/community)
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+This plugin offers capabilities that follow the #theGamificationProject's Success Plan by Conrad Lin.
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+It allows you to manage your tasks, projects, key results, and goals within Obsidian. You can also push your wins to the [Make Work Fun](https://www.producthunt.com/posts/make-work-fun-gamify-notion-workspaces) app, which is the Co-x3 Community's solution to multiplayer for personal development.
 
-### First time developing plugins?
+It relies on markdown files that have the following format:
 
-Quick starting guide for new plugin devs:
+![Markdown Preview](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/task-markdown-preview.png)
 
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+You can share wins with the Co-x3 community by changing an item's status to "Complete" and choosing the "Share with Family" option. When this is done, it will be push to Make Work Fun over a series of steps. Here's a diagram on how it gets from Obsidian to Make Work Fun:
 
-### Releasing new releases
+![Share with Family Flow](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/share-with-family-diagram.png)
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments.
-- Publish the release.
-
-### Adding your plugin to the community plugin list
-
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
-
-### How to use
-
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
-
-### Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-### API Documentation
-
-See https://github.com/obsidianmd/obsidian-api
+More to Come!
