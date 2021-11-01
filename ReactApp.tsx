@@ -9,7 +9,7 @@ import { Fab } from 'react-tiny-fab';
 import { MdAdd } from "react-icons/md";
 import 'react-tiny-fab/dist/styles.css';
 
-export default function ReactApp() {
+export default function ReactApp(settings: any) {
   const { vault } = useApp(); // hook that gives us access to the Obsidian app object (ex. <h4>{vault.getName()}</h4>)
   const [ successPlanItems, setSPItems ] = useState(null);
   const [ successPlanObjects, setSPObjects ] = useState(null);
@@ -21,6 +21,31 @@ export default function ReactApp() {
   const [ projectHideLedger, setProjectHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
   const [ keyResultHideLedger, setKeyResultHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
   const [ goalHideLedger, setGoalHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
+
+  async function addWin(successPlanItem: any) {
+
+    const prod_url = 'https://joshwin.app.n8n.cloud/webhook/obsidian-to-notion';
+
+    const data = {
+      body: {
+        parent: { database_id: settings.settings.notionDatabaseID },
+        properties: {
+          "Name": { type: "title", title: [{ "type": "text", "text": { "content": successPlanItem.name } }] },
+          "Share With Family?": { type: "checkbox", checkbox: successPlanItem.share_with_family }
+        }, 
+      },
+      other: { integration_key: settings.settings.notionIntegrationKey }
+    };    
+
+    const response = await fetch(prod_url, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'no-cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+  }
 
   function getCurrentTabHideLedger() {
     switch (activeTab) {
@@ -326,11 +351,11 @@ export default function ReactApp() {
 
         menu.addItem((item) =>
         item
-          .setTitle("Ready to Complete")
+          .setTitle("Ready to Start")
           .setIcon("navigate-glyph")
           .onClick(async () => {
-            //new Notice("Ready to Complete");
-          await changeStatusOfSuccessPlanItem(successPlanItem, "ready-to-complete");
+            //new Notice("Ready to Start");
+          await changeStatusOfSuccessPlanItem(successPlanItem, "ready-to-start");
           resetSuccessPlanItemState();
           })
       );
@@ -364,6 +389,18 @@ export default function ReactApp() {
           .onClick(async () => {
             //new Notice("Complete");
             await changeStatusOfSuccessPlanItem(successPlanItem, "complete");
+            resetSuccessPlanItemState();
+          })
+      );
+
+      menu.addItem((item) => 
+        item
+          .setTitle("Complete (+ Share with Family)")
+          .setIcon("checkmark")
+          .onClick(async () => {
+            //new Notice("Complete (and Share with Family)");
+            await changeStatusOfSuccessPlanItem(successPlanItem, "complete");
+            await addWin({ ...successPlanItem, share_with_family: true });
             resetSuccessPlanItemState();
           })
       );
@@ -426,7 +463,7 @@ export default function ReactApp() {
   }
 
   function generateSections() {
-    const SECTIONS = ['Ready To Complete', 'Next Up', 'In Progress', 'Complete', 'Backlog', 'Canceled'];
+    const SECTIONS = ['Ready To Start', 'Next Up', 'In Progress', 'Complete', 'Backlog', 'Canceled'];
     let result = []; 
 
     for (let i = 0; i < SECTIONS.length; i++) {
@@ -437,7 +474,7 @@ export default function ReactApp() {
       result.push(
         <div key={ i } style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              <h3 style={{ marginRight: 5 }}>{ SECTIONS[i].includes('To') ? SECTIONS[i].replace('To', 'to') : SECTIONS[i] }</h3>
+              <h3 style={{ marginRight: 5, color: '#ffffff80' }}>{ SECTIONS[i].includes('To') ? SECTIONS[i].replace('To', 'to') : SECTIONS[i] }</h3>
               { list.length != 0 ? <p onClick={ () => handleSectionHideClick(lowercaseSection) }>{ getTabLedgerSectionHideValue(lowercaseSection) ? 'unhide' : 'hide' }</p> : null }
           </div>
           { getTabLedgerSectionHideValue(lowercaseSection) ? null : list }
@@ -497,7 +534,7 @@ export default function ReactApp() {
       share_with_family: "False",
       impact: '',
       type: activeTab,
-      status: "Ready To Complete",
+      status: "Ready To Start",
       difficulty: '',
       do_date: '',
       due_date: '',

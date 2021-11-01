@@ -2,11 +2,15 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 import { SuccessPlanView, VIEW_TYPE_SUCCESS_PLAN } from "./view";
 
 interface SuccessPlanPluginSettings {
-	mySetting: string;
+	notionIntegrationKey: string;
+	notionDatabaseID: string;
+	isGamificationOn: boolean;
 }
 
 const DEFAULT_SETTINGS: SuccessPlanPluginSettings = {
-	mySetting: 'default'
+	notionIntegrationKey: '',
+	notionDatabaseID: '',
+	isGamificationOn: true
 }
 
 export default class SuccessPlanPlugin extends Plugin {
@@ -19,76 +23,18 @@ export default class SuccessPlanPlugin extends Plugin {
 
 		this.registerView(
 			VIEW_TYPE_SUCCESS_PLAN,
-			(leaf) => new SuccessPlanView(leaf)
+			(leaf) => new SuccessPlanView(leaf, this)
 		  );
 
 		// This creates an icon in the left ribbon.
-		let ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			//new Notice('Hello World! Joshwin! Joshwin! Joshwin!');
-
-			/*
-			const files = this.app.vault.getMarkdownFiles()
-
-			for (let i = 0; i < files.length; i++) {
-				console.log(files[i].path);
-			}
-			*/
-
-			/*
-			this.app.workspace.iterateAllLeaves((leaf) => {
-				console.log(leaf.getViewState().type);
-			});
-			*/
-
+		let ribbonIconEl = this.addRibbonIcon('dice', 'Success Plan Plugin', (evt: MouseEvent) => { // TODO: Find a relevant icon
 			this.activateView();
 		});
 		// Perform additional things with the ribbon
-		ribbonIconEl.addClass('my-plugin-ribbon-class');
-
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		let statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
-
-		// This adds a simple command that can be triggered anywhere
-		this.addCommand({
-			id: 'open-sample-modal-simple',
-			name: 'Open sample modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				let markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-			}
-		});
+		//ribbonIconEl.addClass('my-plugin-ribbon-class');
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new SuccessPlanSettingTab(this.app, this));
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
@@ -128,23 +74,7 @@ export default class SuccessPlanPlugin extends Plugin {
 	}
 }
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		let {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
+class SuccessPlanSettingTab extends PluginSettingTab {
 	plugin: SuccessPlanPlugin;
 
 	constructor(app: App, plugin: SuccessPlanPlugin) {
@@ -157,18 +87,43 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+		containerEl.createEl('h3', {text: 'General Settings'});
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
+			.setName('Notion Integration Key')
+			.setDesc('This is used to push completed items to a Notion database that you own.')
 			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+				.setPlaceholder('Enter your secret key')
+				.setValue(this.plugin.settings.notionIntegrationKey)
 				.onChange(async (value) => {
 					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.notionIntegrationKey = value;
 					await this.plugin.saveSettings();
 				}));
+
+		new Setting(containerEl)
+		.setName('Notion Database ID')
+		.setDesc('Get this by copying the URL of your Notion database. If you are using an inline database, make sure that you are viewing the database as a full page. If you are on Desktop, click on "Share" and then "Copy Link"')
+		.addText(text => text
+			.setPlaceholder('Notion database ID')
+			.setValue(this.plugin.settings.notionDatabaseID)
+			.onChange(async (value) => {
+				console.log('Secret: ' + value);
+				this.plugin.settings.notionDatabaseID = value;
+				await this.plugin.saveSettings();
+			}));
+
+		/* // Finish setting up when I take care of some more important tasks
+		new Setting(containerEl)
+		.setName('Gamification')
+		.setDesc('If disabled, this will cause the total goal for tasks to change to the estimated number of Pomodoros.')
+		.addToggle(cb => cb
+			.setValue(this.plugin.settings.isGamificationOn)
+			.onChange(async (value) => {
+				console.log('New Value: ' + value);
+				this.plugin.settings.isGamificationOn = value;
+				await this.plugin.saveSettings();
+			}));
+		*/
 	}
 }

@@ -61,7 +61,7 @@ export class ItemModal extends Modal {
     .setName("Status")
     .addDropdown((cb) =>
         cb
-        .addOptions({ ready_to_complete: "Ready to Complete", next_up: "Next Up", in_progress: "In Progress", complete: 'Complete', backlog: "Backlog", canceled: "Canceled" })
+        .addOptions({ ready_to_start: "Ready to Start", next_up: "Next Up", in_progress: "In Progress", complete: 'Complete', backlog: "Backlog", canceled: "Canceled" })
         .setValue(this.successPlanItem.status ? this.successPlanItem.status.toLowerCase().replaceAll(' ', '_') : "")
         .onChange(async (val) => {
             this.successPlanItem.status = val.includes('_') ? uppercaseFirstCharOverMultipleWordsWithReplaceSeparator(val, '_', ' ') : uppercaseFirstChar(val)
