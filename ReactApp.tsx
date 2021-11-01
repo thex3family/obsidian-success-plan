@@ -69,7 +69,7 @@ export default function ReactApp(settings: any) {
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} key={ index } className={'item'} onClick={(event) => showContextMenu(event, item) }>
         <p>{ item.name }</p>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          { item.do_date && item.closing_date ? <p style={{ marginRight: '5px' }}>{ determinePunctionality(item.do_date, item.closing_date) }</p>  : null}
+          { <p style={{ marginRight: '10px' }}>{ determinePunctionality(item.do_date, item.closing_date) }</p>}
           { item.difficulty ? <p>+{ BASE_GOLD * item.difficulty } 💰</p> : null }
         </div>
       </div>);
@@ -90,8 +90,10 @@ export default function ReactApp(settings: any) {
       closingDateStr = closingDate.toLocaleDateString();
     }
 
-    if (doDate == undefined) {
+    if (doDate == undefined || doDateStr == "") {
       return '⚠ No Target';
+    } else if (new Date() < doDate) {
+      return Math.floor(calculateDifferenceBetweenGivenDates(new Date(), doDate)) + ' day(s) to go!';
     } else if (closingDate && doDateStr == closingDateStr) {
       return '✔️ On Time!';
     } else if (doDateStr == todayStr) {
