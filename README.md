@@ -1,57 +1,64 @@
-## Obsidian Sample Plugin
+## Success Plan for Obsidian
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+![Preview](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/obsidian-success-plan-preview.png)
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+> This plugin was developed by [Joshwin Greene](https://github.com/joshwingreene) in collaboration with [Conrad Lin](https://conradlin.com/) (Designer of the Success Plan Framework) and the [Co-x3 Family](https://join.co-x3.com/). If you would like to show Joshwin your appreciation, you can do so by buying him a [coffee](https://ko-fi.com/joshwingreene). If you are a fan of what Conrad, Joshwin, and the rest of the Co-x3 Family are doing, please support us by becoming a one-time or monthly [Patron](https://toolbox.co-x3.com/support-us). Also, if you are interested in being a part of a community of co-creators and collaborators, then we would be happy to have you. [Learn More](https://join.co-x3.com/community).
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+This plugin offers capabilities that follow #theGamificationProject's Success Plan by Conrad Lin.
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+It allows you to manage your tasks, projects, key results, and goals within Obsidian. You can also push your wins to the [Make Work Fun](https://www.producthunt.com/posts/make-work-fun-gamify-notion-workspaces) app, which is the Co-x3 Family's solution to multiplayer for personal development. We recently open-sourced the [code](https://github.com/thex3family/make-work-fun) (with limitations)!
 
-### First time developing plugins?
+This plugin relies on markdown files that have the following format:
 
-Quick starting guide for new plugin devs:
+![Markdown Preview](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/task-markdown-preview.png)
 
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+You can share wins with the Co-x3 Family by changing an item's status to "Complete" and choosing the "Share with Family" option. When this is done, it will be pushed to Make Work Fun over a series of steps. Here's a diagram on how it gets from Obsidian to Make Work Fun:
 
-### Releasing new releases
+![Share with Family Flow](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/share-with-family-diagram.png)
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments.
-- Publish the release.
+After you have shared the win, you will see the win in the "Recent Wins" table on your player page. Here's an example:
 
-### Adding your plugin to the community plugin list
+![player page](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/obsidian-to-make-work-fun.png)
 
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+## Getting Started
 
-### How to use
+1. Install the plugin manually or via the Community Plugins area in Obsidian (after it is officially added to Obsidian's Community of Plugins)
 
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
+2. Create a Success Plan directory in your vault and create subfolders for each type of item ([Read the directory section of this file](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/success-plan-dir-struc-and-tags.md))
 
-### Manually installing the plugin
+3. Add the above file to your vault so you get access to the tags
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+4. Open the plugin's pane/view by clicking on its icon on the left hand bar/ribbon
 
-### API Documentation
+(**Follow the following steps if you wish to push your wins to Make Work Fun)**
 
-See https://github.com/obsidianmd/obsidian-api
+1. Create an account on [Make Work Fun](https://www.makework.fun/) if you don't already have one. Create a custom-made database that is [in line](https://academy.co-x3.com/en/articles/5619383-how-to-connect-any-notion-database-to-the-app) with the Make Work Fun / Co-x3 Family Connection app or use the Success Plan database that's a part of the FREE [Gamify your Life](https://www.producthunt.com/posts/gamify-your-life) package.
+
+3. Create a a Notion integration for this plugin ([Read Steps 1 and 2](https://developers.notion.com/docs/getting-started))
+
+2. Enter the Notion integration key to the "Notion Integration Key" text box on the Settings tab for this plugin 
+
+3. Enter the database id to the "Notion Database ID" text box on the Settings tab for this plugin
+
+## Known Bugs
+
+I know of a couple of bugs. So, YMMV. However, just don’t use apostrophes or dashes in the title. I’ll be dealing with that issue soon. It won’t crash the app or anything based on what I have experienced.
+
+## Features
+
+- List and Show/Hide Success Plan items that can be found in the Success Plan directory ![Success](https://img.shields.io/badge/-success-brightgreen)
+- Easily change the status of Success Plan items by clicking and selecting the new status (ex. In Progress) ![Success](https://img.shields.io/badge/-success-brightgreen)
+- Create Success Plan items using the floating action button to the bottom right ![Success](https://img.shields.io/badge/-success-brightgreen)
+- Edit Success Plan Items by clicking an item and clicking on "Edit" ![Success](https://img.shields.io/badge/-success-brightgreen)
+- Push wins to Make Work Fun (very basic at the moment) ![Success](https://img.shields.io/badge/-success-brightgreen)
+
+## Coming Soon
+
+- Fully map completed success items that are shared to the Co-x3 Family with the structure defined by Make Work Fun (ex. recognize the item type)
+- Be able to select upstream and downstream items when creating and editing items via the modal
+- Be able to turn gamification off. So, instead of being able to see the gold that you will get for completing a task, you will see the estimated number of pomodoros based on the difficulty that you choose.
+- Be able to turn the Share With Family functionality off. At the moment, you can ignore the Share with Family functionality by not using the Share with Family context menu option or the toggle in the modal. If you follow these instructions, then the plugin won't attempt to push your win to Make Work Fun.
+
+## Want to Help?
+
+Join the Co-x3 Family! I'm one of the two co-leaders of the Artificer (Programmer) faction and I'm leading the official guild project that was created for this plugin. So, I and the Co-x3 Family would be happy to have you. Learn more about joining [here](https://join.co-x3.com/apply).
