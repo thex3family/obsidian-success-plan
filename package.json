@@ -2,10 +2,10 @@
     "name": "obsidian-success-plan",
     "version": "0.0.1",
     "description": "This plugin offers capabilities that follow the #theGamificationProject's Success Plan by Conrad Lin.",
-    "main": "main.js",
+    "main": "src/main.js",
     "scripts": {
-        "dev": "esbuild main.ts --bundle --external:obsidian --outdir=.  --target=es2016 --format=cjs --sourcemap=inline --watch",
-        "build": "esbuild main.ts --bundle --external:obsidian --outdir=.  --target=es2016 --format=cjs"
+        "dev": "esbuild src/main.ts --bundle --external:obsidian --outdir=.  --target=es2016 --format=cjs --sourcemap=inline --watch",
+        "build": "esbuild src/main.ts --bundle --external:obsidian --outdir=.  --target=es2016 --format=cjs"
     },
     "keywords": [],
     "author": "Joshwin Greene",

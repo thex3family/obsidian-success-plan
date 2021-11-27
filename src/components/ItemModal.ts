@@ -1,5 +1,5 @@
 import { App, Modal, Setting } from "obsidian";
-import { uppercaseFirstChar, uppercaseFirstCharOverMultipleWordsWithReplaceSeparator } from "utility";
+import { uppercaseFirstChar, uppercaseFirstCharOverMultipleWordsWithReplaceSeparator } from "src/utility";
 
 export class ItemModal extends Modal {
 

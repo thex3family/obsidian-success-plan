@@ -20,5 +20,5 @@
   },
   "include": [
     "**/*.ts"
-, "view.tsx", "context.tsx"  ]
+, "src/view.tsx", "src/context.tsx"  ]
 }
