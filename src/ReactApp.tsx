@@ -177,7 +177,8 @@ export default function ReactApp(settings: any) {
       upstream: '',
       downstream: '',
       tag: '',
-      non_property_content: '',
+      view_content: '',
+      note_content: '',
       full_content: '',
       file: file
      };
@@ -193,11 +194,10 @@ export default function ReactApp(settings: any) {
     // split using '---' (use the first element to get the value of the other properties besides content)
     let contentArray = itemContent.split('---');
     let propertyContent = contentArray[0];
-    let nonPropertyContent = contentArray[1];
+    let viewContent = contentArray[1];
+    let noteContent = contentArray[2];
 
     // split the property content using carriage return ('\n') - assuming this gives me what I want
-    //console.log('*** Property Content ***');
-    //console.log(propertyContent);
 
     let propertyContentArray = propertyContent.split('\n');
 
@@ -237,10 +237,8 @@ export default function ReactApp(settings: any) {
       }
     }
 
-    //console.log('*** Non-Property Content ***');
-    //console.log(nonPropertyContent);
-
-    result.non_property_content = nonPropertyContent;
+    result.view_content = viewContent.trim();
+    result.note_content = noteContent;
 
     //console.log('result:', result);
 
@@ -513,7 +511,9 @@ export default function ReactApp(settings: any) {
     //console.log('prepareFileContent');
     //console.log('successPlanitem:', successPlanItem);
 
-    let items: string = "Type:: \#type/" + lowercaseAndReplaceSep(successPlanItem.type, ' ', '-') + "\n\n" + 
+    let propertiesHeader: string = "### Properties & Views\n\n";
+
+    let properties: string = "Type:: \#type/" + lowercaseAndReplaceSep(successPlanItem.type, ' ', '-') + "\n\n" + 
     "Share with Family:: " + (isNotBlankOrUndefined(successPlanItem.share_with_family) ? ("\#share-with-family/" + (successPlanItem.share_with_family === 'True' ? 'true' : 'false')) : "") + "\n\n" +
     "Upstream:: " + (isNotBlankOrUndefined(successPlanItem.upstream) ? ("[[" + successPlanItem.upstream + "]]") : "") + "\n\n" +
     "Downstream:: " + (isNotBlankOrUndefined(successPlanItem.downstream) ? ("[[" + successPlanItem.downstream + "]]") : "") + "\n\n" +
@@ -523,12 +523,10 @@ export default function ReactApp(settings: any) {
     "Due Date:: " + (isNotBlankOrUndefined(successPlanItem.due_date) ? ("[[" + convertDateStringToFormat(successPlanItem.due_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
     "Closing Date:: " + (isNotBlankOrUndefined(successPlanItem.closing_date) ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
     "Difficulty:: " + (isNotBlankOrUndefined(successPlanItem.difficulty) ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
-    "Tag:: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "") + "\n\n" +
-    "---\n\n" +
-    successPlanItem.non_property_content;
+    "Tag:: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "");
 
-    //console.log("items:", items);    
-    return items;
+    //console.log("prepareFileContent - output - :", propertiesHeader + properties + "\n\n---\n\n" + successPlanItem.view_content + "\n\n---\n\n" + successPlanItem.note_content.trim());    
+    return propertiesHeader + properties + "\n\n---\n\n" + successPlanItem.view_content + "\n\n---\n\n" + successPlanItem.note_content.trim();
   }
 
   async function createSuccessPlanItem(data: any) { // ex path "Success Plan/Key Results/Key Result - First KR.md"
@@ -553,7 +551,8 @@ export default function ReactApp(settings: any) {
       upstream: '',
       downstream: '',
       tag: 25,
-      non_property_content: '\n\nNotes\n-'
+      view_content: '```dataview\n\n```',
+      note_content: '### Notes\n'
      };
 
     new ItemModal(this.app, 'CREATE', defaultItem, async (result) => {

@@ -150,9 +150,9 @@ export class ItemModal extends Modal {
     .setName("Notes")
     .addTextArea((cb) =>
         cb 
-        .setValue(this.successPlanItem.non_property_content ? this.successPlanItem.non_property_content.trim() : "")
+        .setValue(this.successPlanItem.note_content ? this.successPlanItem.note_content.trim() : "")
         .onChange(async (val) => {
-            this.successPlanItem.non_property_content = val
+            this.successPlanItem.note_content = val
         })
     );
 
