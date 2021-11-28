@@ -19,7 +19,7 @@ export class ItemModal extends Modal {
 
   onOpen() {
     let { contentEl } = this;
-    contentEl.createEl("h2", { text: this.action == 'EDIT' ? "Edit Item" : "Create Item", cls: "modal_header" });
+    contentEl.createEl("h3", { text: this.action == 'EDIT' ? "Edit Item" : "Create Item", cls: "modal_header" });
 
     new Setting(contentEl)
       .setName("Name")
@@ -146,6 +146,7 @@ export class ItemModal extends Modal {
         );
     }
 
+    /* Temporarily removing this since the note-editing experience isn't great at the moment
     new Setting(contentEl)
     .setName("Notes")
     .addTextArea((cb) =>
@@ -155,6 +156,7 @@ export class ItemModal extends Modal {
             this.successPlanItem.note_content = val
         })
     );
+    */
 
     new Setting(contentEl)
     .addButton((btn) =>

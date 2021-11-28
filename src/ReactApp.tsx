@@ -552,7 +552,7 @@ export default function ReactApp(settings: any) {
       downstream: '',
       tag: 25,
       view_content: '```dataview\n\n```',
-      note_content: '### Notes\n'
+      note_content: '### Notes'
      };
 
     new ItemModal(this.app, 'CREATE', defaultItem, async (result) => {
