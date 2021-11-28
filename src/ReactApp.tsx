@@ -256,7 +256,7 @@ export default function ReactApp(settings: any) {
 
   function getValueFromTagStr(text: string): any {
     let result: string | number;
-    let secondHalf = text.split(':')[1];
+    let secondHalf = text.split('::')[1];
 
     if (secondHalf.includes('/')) {
       result = uppercaseFirstChar(secondHalf.split('/')[1].trim());
@@ -281,7 +281,7 @@ export default function ReactApp(settings: any) {
 
   function getValueFromStreamOrDateStr(text: string): any {
     let result: string | Date;
-    let secondHalf = text.split(':')[1];
+    let secondHalf = text.split('::')[1];
     
     if (secondHalf.includes('[[')) {
       result = secondHalf.replace('[[', '').replace(']]', '').trim();
@@ -513,17 +513,17 @@ export default function ReactApp(settings: any) {
     //console.log('prepareFileContent');
     //console.log('successPlanitem:', successPlanItem);
 
-    let items: string = "Type: \#type/" + lowercaseAndReplaceSep(successPlanItem.type, ' ', '-') + "\n\n" + 
-    "Share with Family: " + (isNotBlankOrUndefined(successPlanItem.share_with_family) ? ("\#share-with-family/" + (successPlanItem.share_with_family === 'True' ? 'true' : 'false')) : "") + "\n\n" +
-    "Upstream: " + (isNotBlankOrUndefined(successPlanItem.upstream) ? ("[[" + successPlanItem.upstream + "]]") : "") + "\n\n" +
-    "Downstream: " + (isNotBlankOrUndefined(successPlanItem.downstream) ? ("[[" + successPlanItem.downstream + "]]") : "") + "\n\n" +
-    "Impact: " + (isNotBlankOrUndefined(successPlanItem.impact) ? ("\#impact/" + lowercaseAndReplaceSep(successPlanItem.impact, ' ', '-')) : "") + "\n\n" +
-    "Status: " + (isNotBlankOrUndefined(successPlanItem.status) ? ("\#status/" + lowercaseAndReplaceSep(successPlanItem.status, ' ', '-')) : "") + "\n\n" +
-    "Do Date: " + (isNotBlankOrUndefined(successPlanItem.do_date) ? ("[[" + convertDateStringToFormat(successPlanItem.do_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
-    "Due Date: " + (isNotBlankOrUndefined(successPlanItem.due_date) ? ("[[" + convertDateStringToFormat(successPlanItem.due_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
-    "Closing Date: " + (isNotBlankOrUndefined(successPlanItem.closing_date) ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
-    "Difficulty: " + (isNotBlankOrUndefined(successPlanItem.difficulty) ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
-    "Tag: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "") + "\n\n" +
+    let items: string = "Type:: \#type/" + lowercaseAndReplaceSep(successPlanItem.type, ' ', '-') + "\n\n" + 
+    "Share with Family:: " + (isNotBlankOrUndefined(successPlanItem.share_with_family) ? ("\#share-with-family/" + (successPlanItem.share_with_family === 'True' ? 'true' : 'false')) : "") + "\n\n" +
+    "Upstream:: " + (isNotBlankOrUndefined(successPlanItem.upstream) ? ("[[" + successPlanItem.upstream + "]]") : "") + "\n\n" +
+    "Downstream:: " + (isNotBlankOrUndefined(successPlanItem.downstream) ? ("[[" + successPlanItem.downstream + "]]") : "") + "\n\n" +
+    "Impact:: " + (isNotBlankOrUndefined(successPlanItem.impact) ? ("\#impact/" + lowercaseAndReplaceSep(successPlanItem.impact, ' ', '-')) : "") + "\n\n" +
+    "Status:: " + (isNotBlankOrUndefined(successPlanItem.status) ? ("\#status/" + lowercaseAndReplaceSep(successPlanItem.status, ' ', '-')) : "") + "\n\n" +
+    "Do Date:: " + (isNotBlankOrUndefined(successPlanItem.do_date) ? ("[[" + convertDateStringToFormat(successPlanItem.do_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Due Date:: " + (isNotBlankOrUndefined(successPlanItem.due_date) ? ("[[" + convertDateStringToFormat(successPlanItem.due_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Closing Date:: " + (isNotBlankOrUndefined(successPlanItem.closing_date) ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Difficulty:: " + (isNotBlankOrUndefined(successPlanItem.difficulty) ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
+    "Tag:: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "") + "\n\n" +
     "---\n\n" +
     successPlanItem.non_property_content;
 
