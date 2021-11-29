@@ -67,8 +67,8 @@ export class ItemModal extends Modal {
     .setName("Impact")
     .addDropdown((cb) =>
         cb
-          .addOptions({ s_low: "S-Low", low: "Low", medium: "Medium", high: 'High', s_high: "S-High" })
-          .setValue(this.successPlanItem.impact ? this.successPlanItem.impact.toLowerCase().replaceAll(' ', '-') : "")
+          .addOptions({ low: "Low", s_low: "S-Low", medium: "Medium", s_high: "S-High", high: 'High' })
+          .setValue(this.successPlanItem.impact ? this.successPlanItem.impact.toLowerCase().replaceAll(' ', '_') : "")
           .onChange(async (val) => {
             this.successPlanItem.impact = val.includes('_') ? uppercaseFirstCharOverMultipleWordsWithReplaceSeparator(val, '_', ' ') : uppercaseFirstChar(val)
           })
