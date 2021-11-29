@@ -25,7 +25,17 @@ p {
     margin: 0;
 }
 
-.modal_header {
+.center_flex {
     display: flex;
     justify-content: center;
+}
+
+.error_msg {
+    color: orange;
+    margin-bottom: .5rem;
+}
+
+.modal_disabled_submit_btn {
+    background-color: lightgrey !important;
+    color: gray !important;
 }

@@ -1,4 +1,4 @@
-import { App, Modal, Setting } from "obsidian";
+import { App, Modal, Setting, Notice } from "obsidian";
 import { uppercaseFirstChar, uppercaseFirstCharOverMultipleWordsWithReplaceSeparator } from "src/utility";
 
 export class ItemModal extends Modal {
@@ -6,26 +6,43 @@ export class ItemModal extends Modal {
   onSubmit: (result: any) => void;
   successPlanItem: any;
   action: string;
+  isValidName: boolean;
 
   constructor(app: App, action: string, successPlanItem: any, onSubmit: (result: any) => void) {
     super(app);
     this.onSubmit = onSubmit;
     this.successPlanItem = successPlanItem;
     this.action = action;
+    this.isValidName = this.checkIfNameisValid(successPlanItem.name);
 
     console.log('constructor');
     console.log('successPlanItem:', successPlanItem);
   }
 
+  getErrorMessage() {
+    return this.isValidName ? "" : "This is an invalid name. Name's can't include /, \\, :, or .";
+  }
+
   onOpen() {
     let { contentEl } = this;
-    contentEl.createEl("h3", { text: this.action == 'EDIT' ? "Edit Item" : "Create Item", cls: "modal_header" });
+    contentEl.createEl("h3", { text: this.action == 'EDIT' ? "Edit Item" : "Create Item", cls: "center_flex" });
+    contentEl.createEl("p", { text: this.getErrorMessage(), cls: ["center_flex", "error_msg"] });
 
     new Setting(contentEl)
       .setName("Name")
       .addText((text) =>
         text.setValue(this.successPlanItem.name ? this.successPlanItem.name : "").onChange((value) => {
-          this.successPlanItem.name = value
+          this.successPlanItem.name = value;
+          this.isValidName = this.checkIfNameisValid(value);
+          let el = contentEl.querySelector(".error_msg");
+          el.setText(this.getErrorMessage());
+
+          let btn = contentEl.querySelector(".modal_submit_btn");
+          if (this.isValidName) {
+            btn.removeClass("modal_disabled_submit_btn");
+          } else {            
+            btn.addClass("modal_disabled_submit_btn");
+          }
         }));
 
     new Setting(contentEl)
@@ -161,12 +178,21 @@ export class ItemModal extends Modal {
     new Setting(contentEl)
     .addButton((btn) =>
         btn
+        .setClass("modal_submit_btn")
         .setButtonText(this.action == "EDIT" ? "UPDATE" : "Create")
         .setCta()
         .onClick(() => {
-            this.close();
-            this.onSubmit(this.successPlanItem); // TODO: Refine the outputs so they are consistent with how the inner workings work (ex. type's first character is uppercase)
+            if (this.isValidName) {
+                this.close();
+                this.onSubmit(this.successPlanItem); // TODO: Refine the outputs so they are consistent with how the inner workings work (ex. type's first character is uppercase)
+            } else {
+                new Notice("Invalid Name. Please choose a different name.");
+            }
         }));
+  }
+
+  checkIfNameisValid(name: string): boolean {
+      return name.match(/[/\\:.]/g) == null ? true : false;
   }
 
   onClose() {
