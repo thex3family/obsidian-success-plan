@@ -1,18 +1,6 @@
-## Success Plan - Directory Structure and Tags
+### Success Plan Tags
 
-Note: I recommend that you rename this file to "_Tag Directory" or something with "_" so that it stays at the top in the File Explorer.
-
-### Directory Structure
-
-There is a Success Plan directory and four directory inside of it that pertain to each of the different items that are a part of the Success Plan.
-
-Success Plan
-- Goals
-- Key Results
-- Projects
-- Tasks
-
-### Tags
+Purpose: A tag in Obsidian will only be shown if it is inside of a note. So, this document will give you access to all of the tags that are used by this system.
 
 #### Area
 
