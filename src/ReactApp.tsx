@@ -229,7 +229,7 @@ export default function ReactApp(settings: any) {
 
     let propertyContentArray = propertyContent.split('\n');
 
-    let tagProps = ['Type', 'Status', 'Difficulty', 'Tag', 'Impact', 'Share with Family'];
+    let tagProps = ['Type', 'Status', 'Difficulty', 'Tag', 'Impact', 'Share with Family', 'Area (Goals Only)'];
     let streamsAndDateProps = ['Upstream', 'Downstream', 'Do Date', 'Due Date', 'Closing Date'];
 
     // check what the string starts with (only difference: upstream/dates vs everything else) - dif: page vs tag
@@ -240,7 +240,16 @@ export default function ReactApp(settings: any) {
         if (propertyContentArray[i].startsWith(tagProps[k])) {
           //console.log('Starts with a tagProp');
           //console.log('Starts with a tag');
-          let key = tagProps[k].includes(' ') ? lowercaseAndReplaceSep('Share with Family', ' ', '_') : tagProps[k].toLowerCase();
+          let key = null;
+          let tp = tagProps[k];
+          if (tp.includes('Share with Family')) {
+            key = lowercaseAndReplaceSep('Share with Family', ' ', '_');
+          } else if (tp.includes('Area (Goals Only')) {
+            key = 'area';
+          } else {
+            key = tp.toLowerCase()
+          }
+          //let key = tagProps[k].includes(' ') ? lowercaseAndReplaceSep('Share with Family', ' ', '_') : tagProps[k].toLowerCase();
           //console.log('lowercase key:', key);
           if (hasKey(result, key)) {
             //console.log('hasKey called');
@@ -555,7 +564,8 @@ export default function ReactApp(settings: any) {
     "Due Date:: " + (isNotBlankOrUndefined(successPlanItem.due_date) ? ("[[" + convertDateStringToFormat(successPlanItem.due_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
     "Closing Date:: " + (isNotBlankOrUndefined(successPlanItem.closing_date) ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
     "Difficulty:: " + (isNotBlankOrUndefined(successPlanItem.difficulty) ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
-    "Tag:: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "");
+    "Tag:: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "") + "\n\n" +
+    "Area (Goals Only):: \#area/" + lowercaseAndReplaceSep(successPlanItem.area, ' ', '-');
 
     //console.log("prepareFileContent - output - :", propertiesHeader + properties + "\n\n---\n\n" + successPlanItem.view_content + "\n\n---\n\n" + successPlanItem.note_content.trim());    
     return propertiesHeader + properties + "\n\n---\n\n" + successPlanItem.view_content + "\n\n---\n\n" + successPlanItem.note_content.trim();

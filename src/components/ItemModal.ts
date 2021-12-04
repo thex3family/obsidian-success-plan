@@ -167,6 +167,27 @@ export class ItemModal extends Modal {
         );
     }
 
+    new Setting(contentEl)
+    .setName("Area (Goals Only)")
+    .addDropdown((cb) =>
+        cb
+            .addOptions({ career: "Career", 
+                          family: "Family", 
+                          finances: "Finances", 
+                          health: 'Health', 
+                          knowledge: 'Knowledge',
+                          lifestyle: 'Lifestyle',
+                          mindsets: 'Mindsets', // Intentionally making this Plural for MOCs
+                          sharing: 'Sharing',
+                          sustainable_business: 'Sustainable Business',
+                          travel: 'Travel'
+                         })
+            .setValue(this.successPlanItem.area ? this.successPlanItem.area.toLowerCase().replace(' ', '_') : "")
+            .onChange(async (val) => {
+                this.successPlanItem.area = val.includes('_') ? uppercaseFirstCharOverMultipleWordsWithReplaceSeparator(val, '_', ' ') : uppercaseFirstChar(val)
+            })
+        );
+
     /* Temporarily removing this since the note-editing experience isn't great at the moment
     new Setting(contentEl)
     .setName("Notes")
