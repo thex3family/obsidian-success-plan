@@ -2,21 +2,27 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 import { SuccessPlanView, VIEW_TYPE_SUCCESS_PLAN } from "./view";
 
 interface SuccessPlanPluginSettings {
-	notionIntegrationKey: string;
-	notionDatabaseID: string;
+	//notionIntegrationKey: string; // make work fun
+	//notionDatabaseID: string; // make work fun
 	isGamificationOn: boolean;
+	dateFormat: string;
 }
 
 const DEFAULT_SETTINGS: SuccessPlanPluginSettings = {
-	notionIntegrationKey: '',
-	notionDatabaseID: '',
-	isGamificationOn: true
+	//notionIntegrationKey: '', // make work fun
+	//notionDatabaseID: '', // make work fun
+	isGamificationOn: true,
+	dateFormat: 'MM-DD-YYYY'
+
 }
 
 export default class SuccessPlanPlugin extends Plugin {
 	settings: SuccessPlanPluginSettings;
+	isMounted: boolean;
 
 	async onload() {
+		this.isMounted = true;
+
 		console.log('onload');
 
 		await this.loadSettings();
@@ -61,6 +67,7 @@ export default class SuccessPlanPlugin extends Plugin {
 
 	onunload() {
 		console.log("unload");
+		this.isMounted = false;
 
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_SUCCESS_PLAN);
 	}
@@ -125,6 +132,23 @@ class SuccessPlanSettingTab extends PluginSettingTab {
 				await this.plugin.saveSettings();
 				await this.plugin.onunload();
 				new Notice('Please restart plugin.');
+			}));
+
+		new Setting(containerEl)
+		.setName('Date Format')
+		.setDesc('Use the date format that you use for your daily notes, ex. MM DD YYYY')
+		.addText(text => text
+			.setPlaceholder('Date Format')
+			.setValue(this.plugin.settings.dateFormat)
+			.onChange(async (value) => {
+				this.plugin.settings.dateFormat = value;
+				await this.plugin.saveSettings();
+				console.log('Plugin Object:', this.plugin);
+				if (this.plugin.isMounted) {
+					await this.plugin.onunload();
+					console.log('Is Plugin Mounted:', this.plugin.isMounted);
+					new Notice('Please restart plugin.');
+				}
 			}));
 	}
 }

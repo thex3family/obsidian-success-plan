@@ -1,4 +1,4 @@
-import { App, Modal, Setting, Notice } from "obsidian";
+import { App, Modal, Setting, Notice, moment } from "obsidian";
 import { uppercaseFirstChar, uppercaseFirstCharOverMultipleWordsWithReplaceSeparator } from "src/utility";
 
 export class ItemModal extends Modal {
@@ -7,13 +7,15 @@ export class ItemModal extends Modal {
   successPlanItem: any;
   action: string;
   isValidName: boolean;
+  dateFormat: string
 
-  constructor(app: App, action: string, successPlanItem: any, onSubmit: (result: any) => void) {
+  constructor(app: App, dateFormat: string, action: string, successPlanItem: any, onSubmit: (result: any) => void) {
     super(app);
     this.onSubmit = onSubmit;
     this.successPlanItem = successPlanItem;
     this.action = action;
     this.isValidName = this.checkIfNameisValid(successPlanItem.name);
+    this.dateFormat = dateFormat ? dateFormat : 'MM-DD-YYYY';
 
     console.log('constructor');
     console.log('successPlanItem:', successPlanItem);
@@ -28,7 +30,7 @@ export class ItemModal extends Modal {
     contentEl.createEl("h3", { text: this.action == 'EDIT' ? "Edit Item" : "Create Item", cls: "center_flex" });
     contentEl.createEl("p", { text: this.getErrorMessage(), cls: ["center_flex", "error_msg"] });
 
-    new Setting(contentEl)
+    new Setting(contentEl) // TODO: We need to deal with the situation where someone edits an item's name
       .setName("Name")
       .addText((text) =>
         text.setValue(this.successPlanItem.name ? this.successPlanItem.name : "").onChange((value) => {
@@ -112,10 +114,10 @@ export class ItemModal extends Modal {
     .setName("Do Date")
     .addMomentFormat((cb) =>
         cb
-        .setDefaultFormat("MM-DD-YYYY")
-        .setValue(this.successPlanItem.do_date ? this.successPlanItem.do_date.toLocaleDateString() : "")
+        .setDefaultFormat(this.dateFormat)
+        .setValue(this.successPlanItem.do_date != "" ? this.successPlanItem.do_date.format(this.dateFormat) : "")
         .onChange(async (val) => {
-            this.successPlanItem.do_date = new Date(val)
+            this.successPlanItem.do_date = moment(val);
         })
     );
 
@@ -123,10 +125,10 @@ export class ItemModal extends Modal {
     .setName("Due Date")
     .addMomentFormat((cb) =>
         cb
-        .setDefaultFormat("MM-DD-YYYY")
-        .setValue(this.successPlanItem.due_date ? this.successPlanItem.due_date.toLocaleDateString() : "")
+        .setDefaultFormat(this.dateFormat)
+        .setValue(this.successPlanItem.due_date != "" ? this.successPlanItem.due_date.format(this.dateFormat) : "")
         .onChange(async (val) => {
-            this.successPlanItem.due_date = new Date(val)
+            this.successPlanItem.due_date = moment(val);
         })
     );
 
@@ -134,10 +136,10 @@ export class ItemModal extends Modal {
     .setName("Closing Date")
     .addMomentFormat((cb) =>
         cb
-        .setDefaultFormat("MM-DD-YYYY")
-        .setValue(this.successPlanItem.closing_date ? this.successPlanItem.closing_date.toLocaleDateString() : "")
+        .setDefaultFormat(this.dateFormat)
+        .setValue(this.successPlanItem.closing_date != "" ? this.successPlanItem.closing_date.format(this.dateFormat) : "")
         .onChange(async (val) => {
-            this.successPlanItem.closing_date = new Date(val)
+            this.successPlanItem.closing_date = moment(val);
         })
     );
 

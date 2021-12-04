@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useApp } from "./hooks";
 import { useState, useEffect } from 'react';
-import { Menu, Notice, TFile } from 'obsidian';
+import { Menu, Notice, TFile, moment } from 'obsidian';
 import HorizontalTabs from "./components/HorizontalTabs";
 import { ItemModal } from "./components/ItemModal";
 import { uppercaseFirstChar, lowercaseAndReplaceSep } from "src/utility";
@@ -97,7 +97,7 @@ export default function ReactApp(settings: any) {
         <p>{ item.name }</p>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           { item.impact ? <p style={ getImpactStyling(item.impact) }>{ item.impact.replace(' ', '-') } 👊</p> : null }
-          { <p style={ isGamificationOn && item.difficulty ? { marginRight: '10px' } : { marginRight: '0px' } }>{ determinePunctionality(item.do_date, item.closing_date) }</p>}
+          { <p style={ isGamificationOn && item.difficulty ? { marginRight: '10px' } : { marginRight: '0px' } }>{ determinePunctionality(item) }</p>}
           { isGamificationOn && item.difficulty ? getTotalGold(item.difficulty) : null }
         </div>
       </div>);
@@ -105,30 +105,37 @@ export default function ReactApp(settings: any) {
     return result;
   }
 
-  function determinePunctionality(doDate: Date, closingDate: Date): string {
+  function determinePunctionality(item: any): string {
     let todayStr = (new Date()).toLocaleDateString();
     let doDateStr = '';
     let closingDateStr = '';
 
-    if (doDate) {
+    console.log('determinePunctionality - item -', item);
+
+    let doDate = item.do_date;
+    let closingDate = item.closing_date;``
+
+    if (doDate != "") {
+      doDate = doDate.toDate();
       doDateStr = doDate.toLocaleDateString();
     }
     
-    if (closingDate) {
+    if (closingDate != "") {
+      closingDate = closingDate.toDate();
       closingDateStr = closingDate.toLocaleDateString();
     }
 
-    if (doDate == undefined || doDateStr == "") {
+    if (doDateStr == "") {
       return '⚠ No Target';
     } else if (new Date() < doDate) {
       return Math.floor(calculateDifferenceBetweenGivenDates(new Date(), doDate)) + ' day(s) to go!';
-    } else if (closingDate && doDateStr == closingDateStr) {
+    } else if (item.closingDate && doDateStr == closingDateStr) {
       return '✔️ On Time!';
     } else if (doDateStr == todayStr) {
       return '⚠ Finish Today!';
-    } else if (closingDate < doDate) {
+    } else if (closingDate != "" && closingDate < doDate) {
       return '⭐ Early ' + Math.floor(calculateDifferenceBetweenGivenDates(closingDate, doDate)) + ' day(s)!';
-    } else if (doDate < new Date()) {
+    } else if (doDate < new Date()) { // TODO: There is a bug here (reference that 5th date)
       return '🚨 Late ' + Math.floor(calculateDifferenceBetweenGivenDates(doDate, new Date())) + ' day(s)!';
     }
   }
@@ -324,15 +331,18 @@ export default function ReactApp(settings: any) {
   }
 
   function getValueFromStreamOrDateStr(text: string): any {
-    let result: string | Date;
-    let secondHalf = text.split('::')[1];
+    let result: string | any;
+    let secondHalf = text.split('::')[1].trim();
     
-    if (secondHalf.includes('[[')) {
-      result = secondHalf.replace('[[', '').replace(']]', '').trim();
+    if (text.includes('Date')) {
 
-      if (text.includes('Date')) {
-        result = new Date(result);
+      if (secondHalf.includes('[[')) {
+        result = moment(secondHalf.replace('[[', '').replace(']]', ''));
+      } else {
+        result = secondHalf;
       }
+    } else { // Upstream/Downstream
+      result = "";
     }
     
     return result;
@@ -388,103 +398,104 @@ export default function ReactApp(settings: any) {
   }
 
   async function showContextMenu(event: any, successPlanItem: any) { // TODO: Only show the option for share with family if the gamification setting is on
+    const { dateFormat } = settings.settings;
     const menu = new Menu(this.app);
 
-          menu.addItem((item) =>
-          item
-            .setTitle("Edit")
-            .setIcon("pencil")
-            .onClick(async () => {
-              //new Notice("Edit");
-              new ItemModal(this.app, 'EDIT', successPlanItem, async (result) => {
-                new Notice(`Updated File: ${result.type} - ${result.name}`);
-                console.log('Outputted SuccessPlanItem:', result);
-                await updateSuccessPlanItem(result);
-              }).open();
-            })
-        );
+    menu.addItem((item) =>
+      item
+        .setTitle("Edit")
+        .setIcon("pencil")
+        .onClick(async () => {
+          //new Notice("Edit");
+          new ItemModal(this.app, dateFormat, 'EDIT', successPlanItem, async (result) => {
+            new Notice(`Updated File: ${result.type} - ${result.name}`);
+            console.log('Outputted SuccessPlanItem:', result);
+            await updateSuccessPlanItem(result);
+          }).open();
+        })
+    );
 
-        menu.addItem((item) =>
-        item
-          .setTitle("Ready to Start")
-          .setIcon("navigate-glyph")
-          .onClick(async () => {
-            //new Notice("Ready to Start");
-          await changeStatusOfSuccessPlanItem(successPlanItem, "ready-to-start");
+    menu.addItem((item) =>
+      item
+        .setTitle("Ready to Start")
+        .setIcon("navigate-glyph")
+        .onClick(async () => {
+          //new Notice("Ready to Start");
+        await changeStatusOfSuccessPlanItem(successPlanItem, "ready-to-start");
+        resetSuccessPlanItemState();
+        })
+    );
+
+    menu.addItem((item) =>
+      item
+        .setTitle("Next Up")
+        .setIcon("right-chevron-glyph")
+        .onClick(async () => {
+          //new Notice("Next Up");
+        await changeStatusOfSuccessPlanItem(successPlanItem, "next-up");
+        resetSuccessPlanItemState();
+        })
+    );
+
+    menu.addItem((item) =>
+      item
+        .setTitle("In Progress")
+        .setIcon("wrench-screwdriver-glyph")
+        .onClick(async () => {
+          //new Notice("In Progress");
+          await changeStatusOfSuccessPlanItem(successPlanItem, "in-progress");
           resetSuccessPlanItemState();
-          })
-      );
+        })
+    );
 
-      menu.addItem((item) =>
-        item
-          .setTitle("Next Up")
-          .setIcon("right-chevron-glyph")
-          .onClick(async () => {
-            //new Notice("Next Up");
-          await changeStatusOfSuccessPlanItem(successPlanItem, "next-up");
+    menu.addItem((item) =>
+      item
+        .setTitle("Complete")
+        .setIcon("checkmark")
+        .onClick(async () => {
+          //new Notice("Complete");
+          await changeStatusOfSuccessPlanItem(successPlanItem, "complete");
           resetSuccessPlanItemState();
-          })
-      );
+        })
+    );
 
-      menu.addItem((item) =>
-        item
-          .setTitle("In Progress")
-          .setIcon("wrench-screwdriver-glyph")
-          .onClick(async () => {
-            //new Notice("In Progress");
-           await changeStatusOfSuccessPlanItem(successPlanItem, "in-progress");
-           resetSuccessPlanItemState();
-          })
-      );
+    /* // Disabling until Make Work Fun stuff is completed and turned back on
+    menu.addItem((item) => 
+      item
+        .setTitle("Complete (+ Share with Family)")
+        .setIcon("checkmark")
+        .onClick(async () => {
+          //new Notice("Complete (and Share with Family)");
+          await changeStatusOfSuccessPlanItem(successPlanItem, "complete");
+          await addWin({ ...successPlanItem, share_with_family: true });
+          resetSuccessPlanItemState();
+        })
+    );
+    */
 
-      menu.addItem((item) =>
-        item
-          .setTitle("Complete")
-          .setIcon("checkmark")
-          .onClick(async () => {
-            //new Notice("Complete");
-            await changeStatusOfSuccessPlanItem(successPlanItem, "complete");
-            resetSuccessPlanItemState();
-          })
-      );
+    menu.addItem((item) =>
+      item
+        .setTitle("Backlog")
+        .setIcon("box-glyph")
+        .onClick(async () => {
+          //new Notice("Backlog");
+          await changeStatusOfSuccessPlanItem(successPlanItem, "backlog");
+          resetSuccessPlanItemState();
+        })
+    );
 
-      /* // Disabling until Make Work Fun stuff is completed and turned back on
-      menu.addItem((item) => 
-        item
-          .setTitle("Complete (+ Share with Family)")
-          .setIcon("checkmark")
-          .onClick(async () => {
-            //new Notice("Complete (and Share with Family)");
-            await changeStatusOfSuccessPlanItem(successPlanItem, "complete");
-            await addWin({ ...successPlanItem, share_with_family: true });
-            resetSuccessPlanItemState();
-          })
-      );
-      */
+    menu.addItem((item) =>
+      item
+        .setTitle("Canceled")
+        .setIcon("cross")
+        .onClick(async () => {
+          //new Notice("Canceled");
+          await changeStatusOfSuccessPlanItem(successPlanItem, "canceled");
+          resetSuccessPlanItemState();
+        })
+    );
 
-      menu.addItem((item) =>
-        item
-          .setTitle("Backlog")
-          .setIcon("box-glyph")
-          .onClick(async () => {
-            //new Notice("Backlog");
-            await changeStatusOfSuccessPlanItem(successPlanItem, "backlog");
-            resetSuccessPlanItemState();
-          })
-      );
-
-      menu.addItem((item) =>
-        item
-          .setTitle("Canceled")
-          .setIcon("cross")
-          .onClick(async () => {
-            //new Notice("Canceled");
-            await changeStatusOfSuccessPlanItem(successPlanItem, "canceled");
-            resetSuccessPlanItemState();
-          })
-      );
-
-      menu.showAtMouseEvent(event);
+    menu.showAtMouseEvent(event);
   }
 
   function handleTabClick(tab: string) {
@@ -552,14 +563,19 @@ export default function ReactApp(settings: any) {
     return resultArray.join('-');
   }
 
+  function convertMomentToDateFormat(date: any) {
+    const { dateFormat } = settings.settings;
+    return date.format(dateFormat);
+  }
+
   function isNotBlankOrUndefined(value: any) {
     return value != "" && value != undefined;
   }
 
   function prepareFileContent(successPlanItem: any) {
 
-    //console.log('prepareFileContent');
-    //console.log('successPlanitem:', successPlanItem);
+    console.log('prepareFileContent');
+    console.log('successPlanitem:', successPlanItem);
 
     let propertiesHeader: string = "### Properties & Views\n\n";
 
@@ -570,9 +586,9 @@ export default function ReactApp(settings: any) {
     "Downstream:: " + (isNotBlankOrUndefined(successPlanItem.downstream) ? ("[[" + successPlanItem.downstream + "]]") : "") + "\n\n" +
     "Impact:: " + (isNotBlankOrUndefined(successPlanItem.impact) ? ("\#impact/" + lowercaseAndReplaceSep(successPlanItem.impact, ' ', '-')) : "") + "\n\n" +
     "Status:: " + (isNotBlankOrUndefined(successPlanItem.status) ? ("\#status/" + lowercaseAndReplaceSep(successPlanItem.status, ' ', '-')) : "") + "\n\n" +
-    "Do Date:: " + (isNotBlankOrUndefined(successPlanItem.do_date) ? ("[[" + convertDateStringToFormat(successPlanItem.do_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
-    "Due Date:: " + (isNotBlankOrUndefined(successPlanItem.due_date) ? ("[[" + convertDateStringToFormat(successPlanItem.due_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
-    "Closing Date:: " + (isNotBlankOrUndefined(successPlanItem.closing_date) ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
+    "Do Date:: " + (isNotBlankOrUndefined(successPlanItem.do_date) ? ("[[" + convertMomentToDateFormat(successPlanItem.do_date) + "]]") : "") + "\n\n" +
+    "Due Date:: " + (isNotBlankOrUndefined(successPlanItem.due_date) ? ("[[" + convertMomentToDateFormat(successPlanItem.due_date) + "]]") : "") + "\n\n" +
+    "Closing Date:: " + (isNotBlankOrUndefined(successPlanItem.closing_date) ? ("[[" + convertMomentToDateFormat(successPlanItem.closing_date) + "]]") : "") + "\n\n" +
     "Difficulty:: " + (isNotBlankOrUndefined(successPlanItem.difficulty) ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
     "Tag:: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "") + "\n\n" +
     "Area (Goals Only):: " + (isNotBlankOrUndefined(successPlanItem.area) ? "\#area/" + lowercaseAndReplaceSep(successPlanItem.area, ' ', '-') : "");
@@ -608,7 +624,9 @@ export default function ReactApp(settings: any) {
       note_content: '### Notes'
      };
 
-    new ItemModal(this.app, 'CREATE', defaultItem, async (result) => {
+    const { dateFormat } = settings.settings;
+
+    new ItemModal(this.app, dateFormat, 'CREATE', defaultItem, async (result) => {
       new Notice(`New ${result.type} Created`);
       console.log('Outputted SuccessPlanItem:', result); 
       await createSuccessPlanItem(result);
