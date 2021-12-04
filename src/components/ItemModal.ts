@@ -45,12 +45,14 @@ export class ItemModal extends Modal {
           }
         }));
 
+    /* // Related to Make Work Fun
     new Setting(contentEl)
     .setName("Share with Family")
     .addToggle((toggleValue) =>
         toggleValue.setValue(this.successPlanItem.share_with_family === 'true').onChange((value) => {
             this.successPlanItem.share_with_family = value.toString()
         }));
+    */
 
     new Setting(contentEl)
     .setName("Type")
@@ -132,6 +134,7 @@ export class ItemModal extends Modal {
         })
     );
 
+    /* // Upstream and Downstream isn't currently functional
     new Setting(contentEl)
     .setName("Upstream")
     .addSearch((cb) =>
@@ -149,6 +152,7 @@ export class ItemModal extends Modal {
         .setValue(this.successPlanItem.downstream != "" ? this.successPlanItem.downstream : "")
         // TODO: In the onChange method, search for the items that corresponds to the item that is being looked at (ex. Projects if this is a Task)
     );
+    */
 
     if (this.successPlanItem.type == "Task") {
         new Setting(contentEl)
