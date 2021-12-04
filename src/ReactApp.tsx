@@ -68,6 +68,25 @@ export default function ReactApp(settings: any) {
     return <p>+{ BASE_GOLD * itemDifficulty } 💰</p>;
   }
 
+  function getImpactStyling(impact: string) {
+    let baseStyling = { paddingVertical: '3rem', paddingRight: '.5rem', paddingLeft: '.5rem', marginRight: '10px', borderRadius: '5px' };
+
+    switch(impact) {
+      case 'Low':
+        return { ...baseStyling, backgroundColor: '#44494d80' };
+      case 'S Low':
+        return { ...baseStyling, backgroundColor: '#88542b80' };
+      case 'Medium':
+        return { ...baseStyling, backgroundColor: '#32524180' };
+      case 'S High':
+        return { ...baseStyling, backgroundColor: '#92763f80' };
+      case 'High':
+        return { ...baseStyling, backgroundColor: '#79363b80' };
+      default:
+        break;
+    }
+  }
+
   function generateList(array: any[]) {
     let result = [];
 
@@ -76,7 +95,8 @@ export default function ReactApp(settings: any) {
     result = array.map((item, index) => 
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} key={ index } className={'item'} onClick={(event) => showContextMenu(event, item) }>
         <p>{ item.name }</p>
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          { item.impact ? <p style={ getImpactStyling(item.impact) }>{ item.impact.replace(' ', '-') } 👊</p> : null }
           { <p style={ isGamificationOn && item.difficulty ? { marginRight: '10px' } : { marginRight: '0px' } }>{ determinePunctionality(item.do_date, item.closing_date) }</p>}
           { isGamificationOn && item.difficulty ? getTotalGold(item.difficulty) : null }
         </div>
