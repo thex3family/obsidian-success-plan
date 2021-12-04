@@ -575,7 +575,7 @@ export default function ReactApp(settings: any) {
     "Closing Date:: " + (isNotBlankOrUndefined(successPlanItem.closing_date) ? ("[[" + convertDateStringToFormat(successPlanItem.closing_date.toLocaleDateString().replaceAll('/', '-')) + "]]") : "") + "\n\n" +
     "Difficulty:: " + (isNotBlankOrUndefined(successPlanItem.difficulty) ? ("\#difficulty/" + successPlanItem.difficulty + "-inc") : "") + "\n\n" +
     "Tag:: " + (successPlanItem.tag != "" ? ("\#tag/" + successPlanItem.tag + "-mins") : "") + "\n\n" +
-    "Area (Goals Only):: \#area/" + lowercaseAndReplaceSep(successPlanItem.area, ' ', '-');
+    "Area (Goals Only):: " + (isNotBlankOrUndefined(successPlanItem.area) ? "\#area/" + lowercaseAndReplaceSep(successPlanItem.area, ' ', '-') : "");
 
     //console.log("prepareFileContent - output - :", propertiesHeader + properties + "\n\n---\n\n" + successPlanItem.view_content + "\n\n---\n\n" + successPlanItem.note_content.trim());    
     return propertiesHeader + properties + "\n\n---\n\n" + successPlanItem.view_content + "\n\n---\n\n" + successPlanItem.note_content.trim();
