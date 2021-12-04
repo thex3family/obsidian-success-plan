@@ -195,6 +195,7 @@ export default function ReactApp(settings: any) {
       name: getItemTitleOnly(file.name),
       share_with_family: '', // the boolean value will be in the form of a string
       impact: '',
+      description: '',
       type: '',
       status: '',
       difficulty: '',
@@ -231,6 +232,7 @@ export default function ReactApp(settings: any) {
 
     let tagProps = ['Type', 'Status', 'Difficulty', 'Tag', 'Impact', 'Share with Family', 'Area (Goals Only)'];
     let streamsAndDateProps = ['Upstream', 'Downstream', 'Do Date', 'Due Date', 'Closing Date'];
+    // Note: Description is the exception (check the end of the following for loop)
 
     // check what the string starts with (only difference: upstream/dates vs everything else) - dif: page vs tag
     for (let i = 0; i < propertyContentArray.length; i++) {
@@ -272,12 +274,19 @@ export default function ReactApp(settings: any) {
           }
         }   
       }
+
+      // Check for Description
+      if (propertyContentArray[i].startsWith('Description')) {
+        if (hasKey(result, 'description')) {
+          result['description'] = propertyContentArray[i].split('::')[1];
+        }
+      }
     }
 
     result.view_content = viewContent.trim();
     result.note_content = noteContent;
 
-    //console.log('result:', result);
+    //console.log('END of parseFie - result:', result);
 
     return result;
   }
@@ -555,6 +564,7 @@ export default function ReactApp(settings: any) {
     let propertiesHeader: string = "### Properties & Views\n\n";
 
     let properties: string = "Type:: \#type/" + lowercaseAndReplaceSep(successPlanItem.type, ' ', '-') + "\n\n" + 
+    "Description:: " + (isNotBlankOrUndefined(successPlanItem.description) ? successPlanItem.description : "") + "\n\n" +
     "Share with Family:: " + (isNotBlankOrUndefined(successPlanItem.share_with_family) ? ("\#share-with-family/" + (successPlanItem.share_with_family === 'True' ? 'true' : 'false')) : "") + "\n\n" +
     "Upstream:: " + (isNotBlankOrUndefined(successPlanItem.upstream) ? ("[[" + successPlanItem.upstream + "]]") : "") + "\n\n" +
     "Downstream:: " + (isNotBlankOrUndefined(successPlanItem.downstream) ? ("[[" + successPlanItem.downstream + "]]") : "") + "\n\n" +
@@ -581,6 +591,7 @@ export default function ReactApp(settings: any) {
   function FABClick() {
     let defaultItem = { 
       name: '',
+      description: '',
       share_with_family: "false",
       impact: '',
       type: activeTab,

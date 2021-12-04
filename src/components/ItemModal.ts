@@ -45,6 +45,13 @@ export class ItemModal extends Modal {
           }
         }));
 
+    new Setting(contentEl)
+    .setName("Description")
+    .addText((text) =>
+        text.setValue(this.successPlanItem.description ? this.successPlanItem.description : "").onChange((value) => {
+        this.successPlanItem.description = value;
+        }));
+
     /* // Related to Make Work Fun
     new Setting(contentEl)
     .setName("Share with Family")
