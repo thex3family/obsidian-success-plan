@@ -64,15 +64,21 @@ export default function ReactApp(settings: any) {
     }
   }
 
+  function getTotalGold(itemDifficulty: any) {
+    return <p>+{ BASE_GOLD * itemDifficulty } 💰</p>;
+  }
+
   function generateList(array: any[]) {
     let result = [];
+
+    const { isGamificationOn } = settings.settings;
 
     result = array.map((item, index) => 
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} key={ index } className={'item'} onClick={(event) => showContextMenu(event, item) }>
         <p>{ item.name }</p>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          { <p style={{ marginRight: '10px' }}>{ determinePunctionality(item.do_date, item.closing_date) }</p>}
-          { item.difficulty ? <p>+{ BASE_GOLD * item.difficulty } 💰</p> : null }
+          { <p style={ isGamificationOn && item.difficulty ? { marginRight: '10px' } : { marginRight: '0px' } }>{ determinePunctionality(item.do_date, item.closing_date) }</p>}
+          { isGamificationOn && item.difficulty ? getTotalGold(item.difficulty) : null }
         </div>
       </div>);
 

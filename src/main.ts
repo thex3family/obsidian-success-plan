@@ -115,17 +115,16 @@ class SuccessPlanSettingTab extends PluginSettingTab {
 			}));
 		*/
 
-		/* // Finish setting up when I take care of some more important tasks
 		new Setting(containerEl)
 		.setName('Gamification')
-		.setDesc('If disabled, this will cause the total goal for tasks to change to the estimated number of Pomodoros.')
+		.setDesc('If disabled, this will cause the total gold for tasks to be hidden.')
 		.addToggle(cb => cb
 			.setValue(this.plugin.settings.isGamificationOn)
 			.onChange(async (value) => {
-				console.log('New Value: ' + value);
 				this.plugin.settings.isGamificationOn = value;
 				await this.plugin.saveSettings();
+				await this.plugin.onunload();
+				new Notice('Please restart plugin.');
 			}));
-		*/
 	}
 }
