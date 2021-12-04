@@ -22,9 +22,10 @@ export default function ReactApp(settings: any) {
   const [ keyResultHideLedger, setKeyResultHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
   const [ goalHideLedger, setGoalHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
 
-  async function addWin(successPlanItem: any) {
+  /* // Related to Make Work Fun
+  async function addWin(successPlanItem: any) { 
 
-    const prod_url = 'https://joshwin.app.n8n.cloud/webhook/obsidian-to-notion';
+    const prod_url = 'https://joshwin.app.n8n.cloud/webhook/obsidian-to-notion'; // TODO: This endpoint is no longer valid.
 
     const data = {
       body: {
@@ -46,6 +47,7 @@ export default function ReactApp(settings: any) {
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
   }
+  */
 
   function getCurrentTabHideLedger() {
     switch (activeTab) {
@@ -322,15 +324,17 @@ export default function ReactApp(settings: any) {
     );
   }
 
+  /* Related to Make Work Fun
   async function postWinIfCompleteAndSharedWithFamily(successPlanItem: any) {
     if (successPlanItem.status == "Complete" && successPlanItem.share_with_family === 'true') {
       await addWin({ ...successPlanItem, share_with_family: true });
     }
   }
+  */
 
   async function updateSuccessPlanItem(successPlanItem: any) {
     await vault.modify(successPlanItem.file, prepareFileContent(successPlanItem));
-    await postWinIfCompleteAndSharedWithFamily(successPlanItem);
+    //await postWinIfCompleteAndSharedWithFamily(successPlanItem); // Disabling until Make Work Fun stuff is completed and turned back on
     resetSuccessPlanItemState();
   }
 
@@ -400,6 +404,7 @@ export default function ReactApp(settings: any) {
           })
       );
 
+      /* // Disabling until Make Work Fun stuff is completed and turned back on
       menu.addItem((item) => 
         item
           .setTitle("Complete (+ Share with Family)")
@@ -411,6 +416,7 @@ export default function ReactApp(settings: any) {
             resetSuccessPlanItemState();
           })
       );
+      */
 
       menu.addItem((item) =>
         item
@@ -532,7 +538,7 @@ export default function ReactApp(settings: any) {
   async function createSuccessPlanItem(data: any) { // ex path "Success Plan/Key Results/Key Result - First KR.md"
     //prepareFileContent(data); // just for testing
     await vault.create("Success Plan/" + data.type + "s" + "/" + data.type + " - " + data.name + ".md", prepareFileContent(data));
-    await postWinIfCompleteAndSharedWithFamily(data);
+    //await postWinIfCompleteAndSharedWithFamily(data); // Related to Make Work Fun
     resetSuccessPlanItemState();
   }
 

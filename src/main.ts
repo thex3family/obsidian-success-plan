@@ -89,6 +89,7 @@ class SuccessPlanSettingTab extends PluginSettingTab {
 
 		containerEl.createEl('h3', {text: 'General Settings'});
 
+		/* Will turn back on when the Make Work Fun stuff is finished and turned back on
 		new Setting(containerEl)
 			.setName('Notion Integration Key')
 			.setDesc('This is used to push wins that you wish to share with the Co-x3 community to a Notion database that you own so that it is posted to Make Work Fun.')
@@ -112,6 +113,7 @@ class SuccessPlanSettingTab extends PluginSettingTab {
 				this.plugin.settings.notionDatabaseID = value;
 				await this.plugin.saveSettings();
 			}));
+		*/
 
 		/* // Finish setting up when I take care of some more important tasks
 		new Setting(containerEl)
