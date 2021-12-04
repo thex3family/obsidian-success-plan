@@ -16,7 +16,7 @@ export default function ReactApp(settings: any) {
   const [ activeTab, setTab ] = useState('Task');
   const BASE_GOLD = 50;
 
-  let baseHideLedgerValues = { ready_to_complete: true, next_up: true, in_progress: true, complete: true, backlog: true, canceled: true };
+  let baseHideLedgerValues = { ready_to_start: true, next_up: true, in_progress: true, complete: true, backlog: true, canceled: true };
   const [ taskHideLedger, setTaskHideLedger ] = useState({ ...baseHideLedgerValues, next_up: false, in_progress: false });
   const [ projectHideLedger, setProjectHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
   const [ keyResultHideLedger, setKeyResultHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
@@ -480,7 +480,7 @@ export default function ReactApp(settings: any) {
     let result = []; 
 
     for (let i = 0; i < SECTIONS.length; i++) {
-      let lowercaseSection = SECTIONS[i].toLowerCase().replace(' ', '_');
+      let lowercaseSection = SECTIONS[i].toLowerCase().replaceAll(' ', '_');
 
       let list = generateList(getItemsOfGivenTypeAndStatus(activeTab, SECTIONS[i]));
 
