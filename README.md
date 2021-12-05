@@ -26,7 +26,7 @@ After you have shared the win, you will see the win in the "Recent Wins" table o
 
 3. Open the plugin's pane/view by clicking on its icon on the left hand bar/ribbon
 
-4. Read the following materials to understand how the Success Plan Framework works: [Overview](https://academy.co-x3.com/en/articles/5116554-success-plan-overview), [Goals](https://academy.co-x3.com/en/articles/5166915-success-plan-goals), [Key Results](https://academy.co-x3.com/en/articles/5166915-success-plan-key-results), [Projects](https://academy.co-x3.com/en/articles/5166915-success-plan-projects), and [Tasks](https://academy.co-x3.com/en/articles/5166915-success-plan-tasks)
+4. Read the following materials to understand how the Success Plan Framework works: [Overview](https://academy.co-x3.com/en/articles/5116554-success-plan-overview), [Goals](https://academy.co-x3.com/en/articles/5166915-success-plan-goals), [Key Results](https://academy.co-x3.com/en/articles/5167052-success-plan-key-results), [Projects](https://academy.co-x3.com/en/articles/5167054-success-plan-projects), and [Tasks](https://academy.co-x3.com/en/articles/5167058-success-plan-tasks)
 
 ## Features
 
