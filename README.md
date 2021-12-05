@@ -22,7 +22,7 @@ After you have shared the win, you will see the win in the "Recent Wins" table o
 
 1. Install the plugin
 
-2. Download the [Quick-Start-Vault](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/docs/Quick-Start-Vault). It contains everything that you need, i.e. the tags, the directory for the Success Plan Items and their associated subfolders, and templates for each type of item. 
+2. Download the [Quick-Start-Vault](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/docs/Quick-Start-Vault) folder. You can do this by downloading this repo (Click the green "Code" button at the top of this page and click "Download ZIP"). This folder contains everything that you need, i.e. the tags, the directory for the Success Plan Items and their associated subfolders, and templates for each type of item. 
 
 3. Open the plugin's pane/view by clicking on its icon on the left hand bar/ribbon
 
