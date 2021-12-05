@@ -19,8 +19,8 @@ export class ItemModal extends Modal {
     this.dateFormat = dateFormat ? dateFormat : 'MM-DD-YYYY';
     this.originalName = successPlanItem.name;
 
-    console.log('constructor');
-    console.log('successPlanItem:', successPlanItem);
+    //console.log('constructor');
+    //console.log('successPlanItem:', successPlanItem);
   }
 
   getErrorMessage() {

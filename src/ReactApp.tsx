@@ -121,7 +121,7 @@ export default function ReactApp(settings: any) {
     let doDateStr = '';
     let closingDateStr = '';
 
-    console.log('determinePunctionality - item -', item);
+    //console.log('determinePunctionality - item -', item);
 
     let doDate = item.do_date;
     let closingDate = item.closing_date;``
@@ -172,14 +172,6 @@ export default function ReactApp(settings: any) {
     return dayDifference;
   }
 
-  function getMarkdownFiles() {
-    const files = vault.getMarkdownFiles();
-
-    for (let i = 0; i < files.length; i++) {
-      console.log(files[i].path);
-    }
-  }
-
   function getSuccessPlanItems() {
     let result = [];
 
@@ -192,12 +184,6 @@ export default function ReactApp(settings: any) {
         result.push(files[i]);
       }
     }
-
-    /*
-    for (let i = 0; i < result.length; i++) {
-      console.log(result[i].name);
-    }
-    */
 
     setSPItems(result);
   }
@@ -300,7 +286,7 @@ export default function ReactApp(settings: any) {
       // Check for Description
       if (propertyContentArray[i].startsWith('Description')) {
         if (hasKey(result, 'description')) {
-          result['description'] = propertyContentArray[i].split('::')[1];
+          result['description'] = propertyContentArray[i].split('::')[1].trim();
         }
       }
     }
@@ -435,7 +421,7 @@ export default function ReactApp(settings: any) {
           //new Notice("Edit");
           new ItemModal(this.app, dateFormat, 'EDIT', successPlanItem, async (result) => {
             new Notice(`Updated File: ${result.type} - ${result.name}`);
-            console.log('Outputted SuccessPlanItem:', result);
+            //console.log('Outputted SuccessPlanItem:', result);
             if (result.name_was_edited) {
               await updateAndRenameSuccessPlanItem(result);
             } else {
@@ -604,8 +590,8 @@ export default function ReactApp(settings: any) {
 
   function prepareFileContent(successPlanItem: any) {
 
-    console.log('prepareFileContent');
-    console.log('successPlanitem:', successPlanItem);
+    //console.log('prepareFileContent');
+    //console.log('successPlanitem:', successPlanItem);
 
     let propertiesHeader: string = "### Properties & Views\n\n";
 
@@ -658,7 +644,7 @@ export default function ReactApp(settings: any) {
 
     new ItemModal(this.app, dateFormat, 'CREATE', defaultItem, async (result) => {
       new Notice(`New ${result.type} Created`);
-      console.log('Outputted SuccessPlanItem:', result); 
+      //console.log('Outputted SuccessPlanItem:', result); 
       await createSuccessPlanItem(result);
     }).open();
   }
