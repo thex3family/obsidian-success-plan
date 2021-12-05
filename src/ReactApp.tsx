@@ -128,14 +128,16 @@ export default function ReactApp(settings: any) {
     if (doDateStr == "") {
       return '⚠ No Target';
     } else if (new Date() < doDate) {
-      return Math.floor(calculateDifferenceBetweenGivenDates(new Date(), doDate)) + ' day(s) to go!';
-    } else if (item.closingDate && doDateStr == closingDateStr) {
+      return Math.ceil(calculateDifferenceBetweenGivenDates(new Date(), doDate)) + ' day(s) to go!';
+    } else if (closingDate && doDateStr == closingDateStr) {
       return '✔️ On Time!';
     } else if (doDateStr == todayStr) {
       return '⚠ Finish Today!';
     } else if (closingDate != "" && closingDate < doDate) {
       return '⭐ Early ' + Math.floor(calculateDifferenceBetweenGivenDates(closingDate, doDate)) + ' day(s)!';
-    } else if (doDate < new Date()) { // TODO: There is a bug here (reference that 5th date)
+    } else if (closingDate && doDate < closingDate) {
+      return '🚨 Late ' + Math.floor(calculateDifferenceBetweenGivenDates(doDate, closingDate)) + ' day(s)!';
+    } else if (doDate < new Date()) {
       return '🚨 Late ' + Math.floor(calculateDifferenceBetweenGivenDates(doDate, new Date())) + ' day(s)!';
     }
   }
@@ -153,6 +155,8 @@ export default function ReactApp(settings: any) {
       
     // Calculate the no. of days between the two dates
     var dayDifference = timeDifference / (1000 * 3600 * 24);
+
+    //console.log('dif between', date1.toLocaleDateString() + ' and ', date2.toLocaleDateString() + " =", dayDifference);
       
     return dayDifference;
   }
