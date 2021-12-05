@@ -1,7 +1,7 @@
 {
     "name": "obsidian-success-plan",
-    "version": "0.0.1",
-    "description": "This plugin offers capabilities that follow the #theGamificationProject's Success Plan by Conrad Lin.",
+    "version": "0.8.5",
+    "description": "Manage your tasks, projects, key results, and goals within Obsidian. This plugin follows #theGamificationProject's Success Plan Framework.",
     "main": "src/main.js",
     "scripts": {
         "dev": "esbuild src/main.ts --bundle --external:obsidian --outdir=.  --target=es2016 --format=cjs --sourcemap=inline --watch",
@@ -13,14 +13,13 @@
     "devDependencies": {
         "@types/node": "^16.11.1",
         "@types/react": "^17.0.31",
-        "@types/react-dom": "^17.0.10",
         "esbuild": "0.13.8",
         "obsidian": "^0.12.17",
         "tslib": "2.3.1",
         "typescript": "4.4.4"
     },
     "dependencies": {
-        "@notionhq/client": "^0.4.4",
+        "@types/react-dom": "^17.0.11",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-icons": "^4.3.1",
