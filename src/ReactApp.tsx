@@ -10,7 +10,7 @@ import { MdAdd } from "react-icons/md";
 import 'react-tiny-fab/dist/styles.css';
 
 export default function ReactApp(settings: any) {
-  const { vault } = useApp(); // hook that gives us access to the Obsidian app object (ex. <h4>{vault.getName()}</h4>)
+  const { vault, workspace } = useApp(); // hook that gives us access to the Obsidian app object (ex. <h4>{vault.getName()}</h4>)
   const [ successPlanItems, setSPItems ] = useState(null);
   const [ successPlanObjects, setSPObjects ] = useState(null);
   const [ activeTab, setTab ] = useState('Task');
@@ -87,13 +87,24 @@ export default function ReactApp(settings: any) {
     }
   }
 
+  function handleItemClick(event: any, item: any) {
+    if (event.shiftKey) {
+      // Open Item in a new leaf
+      //console.log('vault:', vault);
+      //console.log('workspace:', workspace);
+      workspace.getLeaf(true).openFile(item.file);
+    } else {
+      showContextMenu(event, item);
+    }
+  }
+
   function generateList(array: any[]) {
     let result = [];
 
     const { isGamificationOn } = settings.settings;
 
     result = array.map((item, index) => 
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} key={ index } className={'item'} onClick={(event) => showContextMenu(event, item) }>
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }} key={ index } className={'item'} onClick={(event) => handleItemClick(event, item) }>
         <p>{ item.name }</p>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           { item.impact ? <p style={ getImpactStyling(item.impact) }>{ item.impact.replace(' ', '-') } 👊</p> : null }
