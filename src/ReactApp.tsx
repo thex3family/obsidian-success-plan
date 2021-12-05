@@ -668,8 +668,8 @@ export default function ReactApp(settings: any) {
         </> : null
       }
       <Fab
-        mainButtonStyles={{ backgroundColor: '#7F6DF2' }}
-        style={{ bottom: 15, right: 15 }}
+        mainButtonStyles={{ backgroundColor: '#7F6DF2', marginRight: '0px' }}
+        style={{ bottom: 5, right: 5, marginRight: '1rem' }}
         icon={<MdAdd />}
         alwaysShowTitle={false}
         onClick={() => FABClick()}

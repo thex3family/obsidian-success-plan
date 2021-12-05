@@ -1,19 +1,5 @@
-/* Sets all the text color to red! */
 body {
     color: white;
-}
-
-.book {
-    border: 1px solid var(--background-modifier-border);
-    padding: 10px;
-}
-
-.book__title {
-    font-weight: 600;
-}
-
-.book__author {
-    color: var(--text-muted);
 }
 
 .item {
