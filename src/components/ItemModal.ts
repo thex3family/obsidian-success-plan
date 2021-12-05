@@ -7,7 +7,8 @@ export class ItemModal extends Modal {
   successPlanItem: any;
   action: string;
   isValidName: boolean;
-  dateFormat: string
+  dateFormat: string;
+  originalName: boolean;
 
   constructor(app: App, dateFormat: string, action: string, successPlanItem: any, onSubmit: (result: any) => void) {
     super(app);
@@ -16,6 +17,7 @@ export class ItemModal extends Modal {
     this.action = action;
     this.isValidName = this.checkIfNameisValid(successPlanItem.name);
     this.dateFormat = dateFormat ? dateFormat : 'MM-DD-YYYY';
+    this.originalName = successPlanItem.name;
 
     console.log('constructor');
     console.log('successPlanItem:', successPlanItem);
@@ -30,7 +32,7 @@ export class ItemModal extends Modal {
     contentEl.createEl("h3", { text: this.action == 'EDIT' ? "Edit Item" : "Create Item", cls: "center_flex" });
     contentEl.createEl("p", { text: this.getErrorMessage(), cls: ["center_flex", "error_msg"] });
 
-    new Setting(contentEl) // TODO: We need to deal with the situation where someone edits an item's name
+    new Setting(contentEl)
       .setName("Name")
       .addText((text) =>
         text.setValue(this.successPlanItem.name ? this.successPlanItem.name : "").onChange((value) => {
@@ -217,8 +219,12 @@ export class ItemModal extends Modal {
         .setCta()
         .onClick(() => {
             if (this.isValidName) {
+                if (this.action == "EDIT" && this.successPlanItem.name != this.originalName) {
+                    this.onSubmit({ ...this.successPlanItem, name_was_edited: true }); // TODO: Refine the outputs so they are consistent with how the inner workings work (ex. type's first character is uppercase)
+                } else {
+                    this.onSubmit(this.successPlanItem); // TODO: Refine the outputs so they are consistent with how the inner workings work (ex. type's first character is uppercase)
+                }
                 this.close();
-                this.onSubmit(this.successPlanItem); // TODO: Refine the outputs so they are consistent with how the inner workings work (ex. type's first character is uppercase)
             } else {
                 new Notice("Invalid Name. Please choose a different name.");
             }

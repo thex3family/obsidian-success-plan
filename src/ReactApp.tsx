@@ -407,6 +407,17 @@ export default function ReactApp(settings: any) {
     resetSuccessPlanItemState();
   }
 
+  async function updateAndRenameSuccessPlanItem(successPlanItem: any) {
+    // create item with new name
+    await vault.create("Success Plan/" + successPlanItem.type + "s" + "/" + successPlanItem.type + " - " + successPlanItem.name + ".md", prepareFileContent(successPlanItem));
+    //await postWinIfCompleteAndSharedWithFamily(data); // Related to Make Work Fun
+
+    // delete the old file // put into the user's trash just in case
+    await vault.trash(successPlanItem.file, true);
+
+    resetSuccessPlanItemState();
+  }
+
   function resetSuccessPlanItemState() {
     setSPItems(null);
     setSPObjects(null);
@@ -425,7 +436,11 @@ export default function ReactApp(settings: any) {
           new ItemModal(this.app, dateFormat, 'EDIT', successPlanItem, async (result) => {
             new Notice(`Updated File: ${result.type} - ${result.name}`);
             console.log('Outputted SuccessPlanItem:', result);
-            await updateSuccessPlanItem(result);
+            if (result.name_was_edited) {
+              await updateAndRenameSuccessPlanItem(result);
+            } else {
+              await updateSuccessPlanItem(result);
+            }
           }).open();
         })
     );
