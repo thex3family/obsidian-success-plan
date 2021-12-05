@@ -1,9 +1,9 @@
 {
 	"id": "obsidian-success-plan",
 	"name": "Success Plan",
-	"version": "0.8.0",
+	"version": "0.8.5",
 	"minAppVersion": "0.12.0",
-	"description": "This plugin offers capabilities that follow the #theGamificationProject's Success Plan by Conrad Lin.",
+	"description": "Manage your tasks, projects, key results, and goals within Obsidian. This plugin follows #theGamificationProject's Success Plan Framework.",
 	"author": "Joshwin Greene",
 	"authorUrl": "https://joshwin.dev/",
 	"isDesktopOnly": false
