@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useApp } from "./hooks";
 import { useState, useEffect } from 'react';
-import { Menu, Notice, TFile, moment } from 'obsidian';
+import { Menu, Notice, TFile, moment, TFolder } from 'obsidian';
 import HorizontalTabs from "./components/HorizontalTabs";
 import { ItemModal } from "./components/ItemModal";
 import { uppercaseFirstChar, lowercaseAndReplaceSep } from "src/utility";
@@ -173,19 +173,24 @@ export default function ReactApp(settings: any) {
   }
 
   function getSuccessPlanItems() {
-    let result = [];
+    let files = [];
 
-    const files = vault.getMarkdownFiles();
-    
-    for (let i = 0; i < files.length; i++) {
-      let startOfFileName = files[i].name.split('-')[0];
-      
-      if (startOfFileName.startsWith('Goal') || startOfFileName.startsWith('Key Result') || startOfFileName.startsWith('Project') || startOfFileName.startsWith('Task')) {
-        result.push(files[i]);
+    const path = 'Success Plan';
+
+    const folder = vault.getAbstractFileByPath(path);
+
+    // go through each of the folder's children and add their children to the files list
+    if (folder instanceof TFolder) {
+      let successPlanFolders = folder.children;
+      for (let j = 0; j < successPlanFolders.length; j++) {
+        let successPlanFolder = successPlanFolders[j];
+        if (successPlanFolder instanceof TFolder) {
+          files.push(...successPlanFolder.children);
+        }
       }
     }
 
-    setSPItems(result);
+    setSPItems(files);
   }
 
   async function getSuccessPlanObjects() {
@@ -198,7 +203,7 @@ export default function ReactApp(settings: any) {
     setSPObjects(result);
   }
 
-  async function parseFile(file: TFile) { // Will ignore Associations for now
+  async function parseFile(file: TFile) {
     let result = { 
       name: getItemTitleOnly(file.name),
       share_with_family: '', // the boolean value will be in the form of a string
