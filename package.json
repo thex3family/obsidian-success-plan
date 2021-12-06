@@ -1,6 +1,6 @@
 {
     "name": "obsidian-success-plan",
-    "version": "0.8.5",
+    "version": "0.8.6",
     "description": "Manage your tasks, projects, key results, and goals within Obsidian. This plugin follows #theGamificationProject's Success Plan Framework.",
     "main": "src/main.js",
     "scripts": {
