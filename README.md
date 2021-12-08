@@ -1,5 +1,7 @@
 ## Success Plan for Obsidian
 
+> Official Updates from Joshwin can be found here: [obsidian-success-plan channel in Co-x3's Guilded community](https://www.guilded.gg/thex3family/groups/Gza4RWEd/channels/f09f4cca-318c-43fd-9923-1fe1ca1b4e5a/chat)
+
 ![Preview](https://github.com/joshwingreene/obsidian-success-plan/blob/main/assets/images/obsidian-success-plan-preview.png)
 
 > This plugin was developed by [Joshwin Greene](https://github.com/joshwingreene) in collaboration with [Conrad Lin](https://conradlin.com/) (Designer of the Success Plan Framework) and the [Co-x3 Family](https://join.co-x3.com/). If you would like to show Joshwin your appreciation, you can do so by buying him a [coffee](https://ko-fi.com/joshwingreene). If you are a fan of what Conrad, Joshwin, and the rest of the Co-x3 Family are doing, please support us by becoming a one-time or monthly [Patron](https://toolbox.co-x3.com/support-us). Also, if you are interested in being a part of a community of co-creators and collaborators, then we would be happy to have you. [Learn More](https://join.co-x3.com/community).
