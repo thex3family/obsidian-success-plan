@@ -53,3 +53,5 @@ After you have shared the win, you will see the win in the "Recent Wins" table o
 ## Want to Help?
 
 Join the Co-x3 Family! I'm one of the two co-leaders of the Artificer (Programmer) faction and I'm leading the official guild project that was created for this plugin. So, I and the Co-x3 Family would be happy to have you. Learn more about joining [here](https://join.co-x3.com/apply).
+
+**Developers:** Please create a fork and submit your contributions via Pull Requests.
