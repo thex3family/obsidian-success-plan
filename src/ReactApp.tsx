@@ -561,7 +561,7 @@ export default function ReactApp(settings: any) {
       let list = generateList(getItemsOfGivenTypeAndStatus(activeTab, SECTIONS[i]));
 
       result.push(
-        <div key={ i } style={{ display: 'flex', flexDirection: 'column' }}>
+        <div key={ i } style={{ display: 'flex', flexDirection: 'column', color: 'white' }}>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
               <h3 style={{ marginRight: 5, color: '#ffffff80' }}>{ SECTIONS[i].includes('To') ? SECTIONS[i].replace('To', 'to') : SECTIONS[i] }</h3>
               { list.length != 0 ? <p onClick={ () => handleSectionHideClick(lowercaseSection) }>{ getTabLedgerSectionHideValue(lowercaseSection) ? 'Show' : 'hide' }</p> : null }
