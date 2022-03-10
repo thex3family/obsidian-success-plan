@@ -9,7 +9,7 @@ export default function HorizontalTabs(Props: TabProps) {
 
     function getStyling(tab: string): any {
         return Props.activeTab == tab ?
-            { fontWeight: 'bold', color: 'var(--h1-color, var(--text-title-h1, var(--text-normal,#7F6DF2)))' } : { fontWeight: 'normal', color: 'var(--text-normal)' }
+            { fontWeight: 'bold', color: '#7F6DF2' } : { fontWeight: 'normal', color: 'white' }
     }
 
     return (
