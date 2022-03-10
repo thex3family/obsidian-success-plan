@@ -570,7 +570,6 @@ export default function ReactApp(settings: any) {
         </div>
       )
     }
-
     return result;
   }
 
