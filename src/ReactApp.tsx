@@ -563,7 +563,7 @@ export default function ReactApp(settings: any) {
       result.push(
         <div key={ i } style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              <h3 style={{ marginRight: 5, color: 'var(--h3-color, var(--text-title-h3, var(--text-normal)))', fontSize: 'clamp(16px, 1.25vw, 22px)' }}>{ SECTIONS[i].includes('To') ? SECTIONS[i].replace('To', 'to') : SECTIONS[i] }</h3>
+              <h3 style={{ marginRight: 5, color: '#ffffff80' }}>{ SECTIONS[i].includes('To') ? SECTIONS[i].replace('To', 'to') : SECTIONS[i] }</h3>
               { list.length != 0 ? <p onClick={ () => handleSectionHideClick(lowercaseSection) }>{ getTabLedgerSectionHideValue(lowercaseSection) ? 'show' : 'hide' }</p> : null }
           </div>
           { getTabLedgerSectionHideValue(lowercaseSection) ? null : list }
