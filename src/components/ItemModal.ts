@@ -9,11 +9,13 @@ export class ItemModal extends Modal {
   isValidName: boolean;
   dateFormat: string;
   originalName: boolean;
+  successPlanItems: any;
 
-  constructor(app: App, dateFormat: string, action: string, successPlanItem: any, onSubmit: (result: any) => void) {
+  constructor(app: App, dateFormat: string, successPlanItems: any, action: string, successPlanItem: any, onSubmit: (result: any) => void) {
     super(app);
     this.onSubmit = onSubmit;
     this.successPlanItem = successPlanItem;
+    this.successPlanItems = successPlanItems;
     this.action = action;
     this.isValidName = this.checkIfNameisValid(successPlanItem.name);
     this.dateFormat = dateFormat ? dateFormat : 'MM-DD-YYYY';
@@ -27,7 +29,26 @@ export class ItemModal extends Modal {
     return this.isValidName ? "" : "This is an invalid name. Name's can't include /, \\, :, or .";
   }
 
+
+  onLoadbyType() {
+    let upstreamitems = [];
+    let downstreamitems = [];
+
+    for (let i of this.successPlanItems){
+        if (this.successPlanItem.type == 'Task'){ (i.name.includes('Project')) ? upstreamitems.push(i.name) : ''; }
+        else if (this.successPlanItem.type == 'Project'){
+            (i.name.includes('Key Result')) ? upstreamitems.push(i.name) : (i.name.includes('Task')) ? downstreamitems.push(i.name) : '';
+        }
+        else if (this.successPlanItem.type == 'Key Result'){
+            (i.name.includes('Goal')) ? upstreamitems.push(i.name) : (i.name.includes('Project')) ? downstreamitems.push(i.name) : '';
+        }
+        else if (this.successPlanItem.type == 'Goal'){ (i.name.includes('Key Result')) ? downstreamitems.push(i.name) : ''; }
+    }
+    return [upstreamitems, downstreamitems];
+  }
+
   onOpen() {
+    let [upstream, downstream] = this.onLoadbyType();
     let { contentEl } = this;
     contentEl.createEl("h3", { text: this.action == 'EDIT' ? "Edit Item" : "Create Item", cls: "center_flex" });
     contentEl.createEl("p", { text: this.getErrorMessage(), cls: ["center_flex", "error_msg"] });
@@ -151,49 +172,27 @@ export class ItemModal extends Modal {
     closingDate_setting_item.append(closingDate_setting_item_info);
     closingDate_setting_item.append(closingDate_setting_item_control);
 
-    // new Setting(contentEl)
-    // .setName("Do Date")
-    // .addMomentFormat((cb) =>
-    //     cb
-    //     .setDefaultFormat(this.dateFormat)
-    //     .setValue(this.successPlanItem.do_date != "" ? this.successPlanItem.do_date.format(this.dateFormat) : "")
-    //     .onChange(async (val) => {
-    //         this.successPlanItem.do_date = moment(val);
-    //     })
-    // );
-
-    // new Setting(contentEl)
-    // .setName("Due Date")
-    // .addMomentFormat((cb) =>
-    //     cb
-    //     .setDefaultFormat(this.dateFormat)
-    //     .setValue(this.successPlanItem.due_date != "" ? this.successPlanItem.due_date.format(this.dateFormat) : "")
-    //     .onChange(async (val) => {
-    //         this.successPlanItem.due_date = moment(val);
-    //     })
-    // );
-
-    // new Setting(contentEl)
-    // .setName("Closing Date")
-    // .addMomentFormat((cb) =>
-    //     cb
-    //     .setDefaultFormat(this.dateFormat)
-    //     .setValue(this.successPlanItem.closing_date != "" ? this.successPlanItem.closing_date.format(this.dateFormat) : "")
-    //     .onChange(async (val) => {
-    //         this.successPlanItem.closing_date = moment(val);
-    //     })
-    // );
-
-    /* // Upstream and Downstream isn't currently functional
     new Setting(contentEl)
     .setName("Upstream")
-    .addSearch((cb) =>
+    .setClass("upstream-setting")
+    .setDesc("Ctrl/Command + Click to select multiple options")
+    .addDropdown((cb) =>
         cb
-        .setPlaceholder("Upstream Items (Hierarchy: Tasks > Projects > Key Results > Goals")
-        .setValue(this.successPlanItem.upstream != "" ? this.successPlanItem.upstream : "")
-        // TODO: In the onChange method, search for the items that corresponds to the item that is being looked at (ex. Projects if this is a Task)
+        .addOptions(upstream) 
+        .setValue(this.successPlanItem.upstream != "" ? this.successPlanItem.upstream : "") 
+        .onChange(async (val) => {
+            let values = Array.from(cb.selectEl.selectedOptions).map(value => value.text);
+            let upstreamString = '', value;
+            while(values.length > 0){
+                value = values.shift();
+                (values.length < 1 ) ? upstreamString += '[[' + value + ']]' : upstreamString += '[[' + value + ']],';
+            }
+            this.successPlanItem.upstream = upstreamString
+        })
+        .selectEl.multiple = true
     );
 
+    /* // Upstream and Downstream isn't currently functional
     new Setting(contentEl) // this can be one or more items
     .setName("Downstream")
     .addSearch((cb) =>
