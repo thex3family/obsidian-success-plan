@@ -358,7 +358,6 @@ export default function ReactApp(settings: any) {
       }
       result =  (secondHalf.length == 1) ? secondHalf : streamItems; 
     }
-    
     return result;
   }
 
@@ -611,7 +610,7 @@ export default function ReactApp(settings: any) {
     "Description:: " + (isNotBlankOrUndefined(successPlanItem.description) ? successPlanItem.description : "") + "\n\n" +
     "Share with Family:: " + (isNotBlankOrUndefined(successPlanItem.share_with_family) ? ("\#share-with-family/" + (successPlanItem.share_with_family === 'True' ? 'true' : 'false')) : "") + "\n\n" +
     "Upstream:: " + (isNotBlankOrUndefined(successPlanItem.upstream) ? successPlanItem.upstream : "") + "\n\n" +
-    "Downstream:: " + (isNotBlankOrUndefined(successPlanItem.downstream) ? ("[[" + successPlanItem.downstream + "]]") : "") + "\n\n" +
+    "Downstream:: " + (isNotBlankOrUndefined(successPlanItem.downstream) ? successPlanItem.downstream : "") + "\n\n" +
     "Impact:: " + (isNotBlankOrUndefined(successPlanItem.impact) ? ("\#impact/" + lowercaseAndReplaceSep(successPlanItem.impact, ' ', '-')) : "") + "\n\n" +
     "Status:: " + (isNotBlankOrUndefined(successPlanItem.status) ? ("\#status/" + lowercaseAndReplaceSep(successPlanItem.status, ' ', '-')) : "") + "\n\n" +
     "Do Date:: " + (isNotBlankOrUndefined(successPlanItem.do_date) ? ("[[" + convertMomentToDateFormat(successPlanItem.do_date) + "]]") : "") + "\n\n" +

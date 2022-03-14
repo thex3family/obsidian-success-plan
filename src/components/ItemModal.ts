@@ -174,7 +174,7 @@ export class ItemModal extends Modal {
 
     new Setting(contentEl)
     .setName("Upstream")
-    .setClass("upstream-setting")
+    .setClass("updown-stream-setting")
     .setDesc("Ctrl/Command + Click to select multiple options")
     .addDropdown((cb) =>
         cb
@@ -192,16 +192,25 @@ export class ItemModal extends Modal {
         .selectEl.multiple = true
     );
 
-    /* // Upstream and Downstream isn't currently functional
-    new Setting(contentEl) // this can be one or more items
+    new Setting(contentEl)
     .setName("Downstream")
-    .addSearch((cb) =>
+    .setClass("updown-stream-setting")
+    .setDesc("Ctrl/Command + Click to select multiple options")
+    .addDropdown((cb) =>
         cb
-        .setPlaceholder("Coming Soon!")
-        .setValue(this.successPlanItem.downstream != "" ? this.successPlanItem.downstream : "")
-        // TODO: In the onChange method, search for the items that corresponds to the item that is being looked at (ex. Projects if this is a Task)
+        .addOptions(downstream) 
+        .setValue(this.successPlanItem.downstream != "" ? this.successPlanItem.downstream : "") 
+        .onChange(async (val) => {
+            let values = Array.from(cb.selectEl.selectedOptions).map(value => value.text);
+            let downstreamString = '', value;
+            while(values.length > 0){
+                value = values.shift();
+                (values.length < 1 ) ? downstreamString += '[[' + value + ']]' : downstreamString += '[[' + value + ']],';
+            }
+            this.successPlanItem.downstream = downstreamString;
+        })
+        .selectEl.multiple = true
     );
-    */
 
     if (this.successPlanItem.type == "Task") {
         new Setting(contentEl)

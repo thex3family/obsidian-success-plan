@@ -24,6 +24,10 @@ p {
     color: gray !important;
 }
 
-.upstream-setting .setting-item-control select{
+.updown-stream-setting .setting-item-control .dropdown{
     height: 38px !important;
+}
+
+.updown-stream-setting select option{ 
+    background-color: var(--background-modifier-form-field) !important;
 }
