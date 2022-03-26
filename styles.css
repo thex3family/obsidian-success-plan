@@ -23,3 +23,7 @@ p {
     background-color: lightgrey !important;
     color: gray !important;
 }
+
+.upstream-setting .setting-item-control select{
+    height: 38px !important;
+}
