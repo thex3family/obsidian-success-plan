@@ -1,10 +1,8 @@
-body {
-    color: white;
-}
 
 .item {
     border: 1px solid var(--background-modifier-border);
     padding: 10px;
+    color: var(--text-normal);
 }
 
 p {
