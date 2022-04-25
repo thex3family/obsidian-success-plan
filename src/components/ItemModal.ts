@@ -27,6 +27,38 @@ export class ItemModal extends Modal {
     return this.isValidName ? "" : "This is an invalid name. Name's can't include /, \\, :, or .";
   }
 
+  checkIfDatesEmpty(date_setting: string ){
+    if(date_setting == 'Do Date')
+        return this.successPlanItem.do_date != "" ? this.successPlanItem.do_date._i : "";
+    else if(date_setting == 'Due Date')
+        return this.successPlanItem.due_date != "" ? this.successPlanItem.due_date._i : "";
+    else 
+        return this.successPlanItem.closing_date != "" ? this.successPlanItem.closing_date._i : "";
+  }
+
+  getSuccessItemProperty(date_setting: string){
+    return date_setting == 'Do Date' ? this.successPlanItem.do_date : (date_setting == 'Due Date' ? this.successPlanItem.due_date : this.successPlanItem.closing_date);
+  }
+
+  setSuccessItemProperty(item_setting: string, value: string) {
+    item_setting == 'Do Date' ? this.successPlanItem.do_date = moment(value) : (item_setting == 'Due Date' ? this.successPlanItem.due_date = moment(value) : this.successPlanItem.closing_date = moment(value));
+  }
+
+  getDateSettingItem(date_setting: string){
+    const date_setting_item = this.contentEl.createEl("div", {cls: "setting-item"});
+    const date_setting_item_info = this.contentEl.createEl("div", {cls: "setting-item-info"});
+    date_setting_item_info.append(this.contentEl.createEl("div", { text: date_setting, cls: "setting-item-name"}));
+    const date_setting_item_control = this.contentEl.createEl("div", {cls: "setting-item-control"});
+    const date_picker = this.contentEl.createEl("input", {type: "text", value: this.checkIfDatesEmpty(date_setting)});
+    date_picker.onfocus = () => {date_picker.type = 'date'; date_picker.className="dropdown"; date_picker.value = this.dateFormat;};
+    date_picker.onchange = async (event) => { this.setSuccessItemProperty(date_setting, event.target.value) };
+    date_picker.onblur = () => {date_picker.type = 'text'; date_picker.value = this.getSuccessItemProperty(date_setting).format(this.dateFormat)};
+    date_setting_item_control.append(date_picker);
+    date_setting_item.append(date_setting_item_info);
+    date_setting_item.append(date_setting_item_control);
+    return date_setting_item;
+  }
+
   onOpen() {
     let { contentEl } = this;
     contentEl.createEl("h3", { text: this.action == 'EDIT' ? "Edit Item" : "Create Item", cls: "center_flex" });
@@ -111,39 +143,13 @@ export class ItemModal extends Modal {
             .setDynamicTooltip()
         );
     }
+    
 
-    new Setting(contentEl)
-    .setName("Do Date")
-    .addMomentFormat((cb) =>
-        cb
-        .setDefaultFormat(this.dateFormat)
-        .setValue(this.successPlanItem.do_date != "" ? this.successPlanItem.do_date.format(this.dateFormat) : "")
-        .onChange(async (val) => {
-            this.successPlanItem.do_date = moment(val);
-        })
-    );
+    const doDate_setting_item = this.getDateSettingItem('Do Date');
 
-    new Setting(contentEl)
-    .setName("Due Date")
-    .addMomentFormat((cb) =>
-        cb
-        .setDefaultFormat(this.dateFormat)
-        .setValue(this.successPlanItem.due_date != "" ? this.successPlanItem.due_date.format(this.dateFormat) : "")
-        .onChange(async (val) => {
-            this.successPlanItem.due_date = moment(val);
-        })
-    );
+    const dueDate_setting_item = this.getDateSettingItem('Due Date');
 
-    new Setting(contentEl)
-    .setName("Closing Date")
-    .addMomentFormat((cb) =>
-        cb
-        .setDefaultFormat(this.dateFormat)
-        .setValue(this.successPlanItem.closing_date != "" ? this.successPlanItem.closing_date.format(this.dateFormat) : "")
-        .onChange(async (val) => {
-            this.successPlanItem.closing_date = moment(val);
-        })
-    );
+    const closingDate_setting_item = this.getDateSettingItem('Closing Date');
 
     /* // Upstream and Downstream isn't currently functional
     new Setting(contentEl)
