@@ -2,15 +2,13 @@ import { App, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { SuccessPlanView, VIEW_TYPE_SUCCESS_PLAN } from "./view";
 
 interface SuccessPlanPluginSettings {
-	//notionIntegrationKey: string; // make work fun
-	//notionDatabaseID: string; // make work fun
+	makeWorkFunAPIKey: string;
 	isGamificationOn: boolean;
 	dateFormat: string;
 }
 
 const DEFAULT_SETTINGS: SuccessPlanPluginSettings = {
-	//notionIntegrationKey: '', // make work fun
-	//notionDatabaseID: '', // make work fun
+	makeWorkFunAPIKey: '',
 	isGamificationOn: true,
 	dateFormat: 'MM-DD-YYYY'
 
@@ -87,31 +85,18 @@ class SuccessPlanSettingTab extends PluginSettingTab {
 
 		containerEl.createEl('h3', {text: 'General Settings'});
 
-		/* Will turn back on when the Make Work Fun stuff is finished and turned back on
+		
 		new Setting(containerEl)
-			.setName('Notion Integration Key')
-			.setDesc('This is used to push wins that you wish to share with the Co-x3 community to a Notion database that you own so that it is posted to Make Work Fun.')
+			.setName('Make Work Fun - API Key')
+			.setDesc('This is used to push wins that you wish to share with the Co-x3 community to Make Work Fun (makework.fun).')
 			.addText(text => text
-				.setPlaceholder('Enter your secret key')
-				.setValue(this.plugin.settings.notionIntegrationKey)
+				.setPlaceholder('Enter your secret api key')
+				.setValue(this.plugin.settings.makeWorkFunAPIKey)
 				.onChange(async (value) => {
 					console.log('Secret: ' + value);
-					this.plugin.settings.notionIntegrationKey = value;
+					this.plugin.settings.makeWorkFunAPIKey = value;
 					await this.plugin.saveSettings();
 				}));
-
-		new Setting(containerEl)
-		.setName('Notion Database ID')
-		.setDesc('Get this by copying the URL of your Notion database. If you are using an inline database, make sure that you are viewing the database as a full page. If you are on Desktop, click on "Share" and then "Copy Link"')
-		.addText(text => text
-			.setPlaceholder('Notion database ID')
-			.setValue(this.plugin.settings.notionDatabaseID)
-			.onChange(async (value) => {
-				console.log('Secret: ' + value);
-				this.plugin.settings.notionDatabaseID = value;
-				await this.plugin.saveSettings();
-			}));
-		*/
 
 		new Setting(containerEl)
 		.setName('Gamification')

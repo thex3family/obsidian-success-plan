@@ -22,32 +22,27 @@ export default function ReactApp(settings: any) {
   const [ keyResultHideLedger, setKeyResultHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
   const [ goalHideLedger, setGoalHideLedger ] = useState({ ...baseHideLedgerValues, in_progress: false });
 
-  /* // Related to Make Work Fun
+  // Related to Make Work Fun
   async function addWin(successPlanItem: any) { 
 
-    const prod_url = 'https://joshwin.app.n8n.cloud/webhook/obsidian-to-notion'; // TODO: This endpoint is no longer valid.
+    const prod_url = 'https://n8n.x3.family/webhook/new-win';
 
     const data = {
-      body: {
-        parent: { database_id: settings.settings.notionDatabaseID },
-        properties: {
-          "Name": { type: "title", title: [{ "type": "text", "text": { "content": successPlanItem.name } }] },
-          "Share With Family?": { type: "checkbox", checkbox: successPlanItem.share_with_family }
-        }, 
-      },
-      other: { integration_key: settings.settings.notionIntegrationKey }
-    };    
+      api_key: settings.settings.makeWorkFunAPIKey as string,
+      name: successPlanItem.name as string
+    };
+
+    console.log('data:', data);
 
     const response = await fetch(prod_url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'no-cors', // no-cors, *cors, same-origin
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "no-cors", // no-cors, *cors, same-origin
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json" // this is set to plain text for some reason
       },
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
   }
-  */
 
   function getCurrentTabHideLedger() {
     switch (activeTab) {
@@ -384,24 +379,23 @@ export default function ReactApp(settings: any) {
     );
   }
 
-  /* Related to Make Work Fun
+  // Related to Make Work Fun
   async function postWinIfCompleteAndSharedWithFamily(successPlanItem: any) {
     if (successPlanItem.status == "Complete" && successPlanItem.share_with_family === 'true') {
       await addWin({ ...successPlanItem, share_with_family: true });
     }
   }
-  */
 
   async function updateSuccessPlanItem(successPlanItem: any) {
     await vault.modify(successPlanItem.file, prepareFileContent(successPlanItem));
-    //await postWinIfCompleteAndSharedWithFamily(successPlanItem); // Disabling until Make Work Fun stuff is completed and turned back on
+    await postWinIfCompleteAndSharedWithFamily(successPlanItem); // Disabling until Make Work Fun stuff is completed and turned back on
     resetSuccessPlanItemState();
   }
 
   async function updateAndRenameSuccessPlanItem(successPlanItem: any) {
     // create item with new name
     await vault.create("Success Plan/" + successPlanItem.type + "s" + "/" + successPlanItem.type + " - " + successPlanItem.name + ".md", prepareFileContent(successPlanItem));
-    //await postWinIfCompleteAndSharedWithFamily(data); // Related to Make Work Fun
+    await postWinIfCompleteAndSharedWithFamily(successPlanItem); // Related to Make Work Fun
 
     // delete the old file // put into the user's trash just in case
     await vault.trash(successPlanItem.file, true);
@@ -480,7 +474,7 @@ export default function ReactApp(settings: any) {
         })
     );
 
-    /* // Disabling until Make Work Fun stuff is completed and turned back on
+    // Disabling until Make Work Fun stuff is completed and turned back on
     menu.addItem((item) => 
       item
         .setTitle("Complete (+ Share with Family)")
@@ -492,7 +486,6 @@ export default function ReactApp(settings: any) {
           resetSuccessPlanItemState();
         })
     );
-    */
 
     menu.addItem((item) =>
       item
